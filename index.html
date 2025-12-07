@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Design Studio - แพลตฟอร์มสร้างโค้ดและดีไซน์</title>
+    <!-- โหลด Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* กำหนดฟอนต์หลักเป็น Inter (ทันสมัยและอ่านง่าย) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+
+        /* กำหนดสีหลักสำหรับ Tailwind Custom Colors */
+        .text-primary-teal { color: #37B2B5; }
+        .bg-primary-teal { background-color: #37B2B5; }
+        .hover\:bg-dark-teal:hover { background-color: #2A9B9E; }
+        .hover\:text-primary-teal:hover { color: #37B2B5; }
+
+        /* Style สำหรับแถบแบ่งที่สามารถลากเพื่อยืดหดได้ */
+        .resizer {
+            width: 8px;
+            cursor: col-resize;
+            transition: background-color 0.2s;
+            z-index: 10;
+        }
+        .resizer:hover {
+            background-color: #37B2B5; /* ใช้สีหลักเมื่อชี้ */
+        }
+        /* Style สำหรับแถบแบ่งระหว่าง Layout 2 (Chat) และ Layout 3 (Code) */
+        .divider-v {
+            width: 1px;
+            background-color: #e5e7eb;
+        }
+        /* Custom scrollbar for better aesthetics */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <!-- คอนเทนเนอร์หลัก: กำหนดให้เต็มหน้าจอและจัดเรียงเป็นแถวแนวนอน -->
+    <div class="flex h-screen bg-gray-50 text-gray-800">
+
+        <!-- Layout 1: แถบเครื่องมือ/เมนู (เริ่มต้นที่ 80px สำหรับโหมดไอคอนเท่านั้น) -->
+        <div id="sidebar" class="flex-shrink-0 bg-white border-r border-gray-200 shadow-lg" style="width: 80px;">
+            <!-- Header: แสดงแค่ 'AI' ในโหมดไอคอน -->
+            <div class="p-4 border-b border-gray-200 h-16 flex items-center justify-center">
+                <h1 class="text-xl font-bold text-primary-teal">AI</h1>
+            </div>
+            <nav class="p-2 space-y-2">
+                <!-- 1. สร้างโค้ดใหม่ (Active) -->
+                <a href="#" title="สร้างโค้ดใหม่" class="flex items-center justify-center p-3 text-sm font-medium text-white bg-primary-teal rounded-lg shadow-md transition duration-150 hover:bg-dark-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                </a>
+                <!-- 2. ประวัติโครงการ -->
+                <a href="#" title="ประวัติโครงการ" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4v8l8 4 8-4V7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11V3"></path></svg>
+                </a>
+                <!-- 3. การตั้งค่า AI -->
+                <a href="#" title="การตั้งค่า AI" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </a>
+                <!-- 4. เทมเพลตดีไซน์ -->
+                <a href="#" title="เทมเพลตดีไซน์" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                </a>
+                <!-- 5. คู่มือการใช้งาน -->
+                <a href="#" title="คู่มือการใช้งาน" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v.005m-4.237-.771L9.16 7.682m4.237-.771l2.483 1.398M18 10a8 8 0 11-16 0 8 8 0 0116 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14h4v-2h-4v2z"></path></svg>
+                </a>
+                <!-- 6. ออกจากระบบ -->
+                <a href="#" title="ออกจากระบบ" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-3"></path></svg>
+                </a>
+            </nav>
+        </div>
+
+        <!-- ตัวแบ่ง Layout 1 (Sidebar) และ Layout 2 (Chat) ที่สามารถลากได้ -->
+        <div id="resizer" class="resizer bg-gray-100 hover:bg-primary-teal"></div>
+
+        <!-- คอนเทนเนอร์สำหรับ Layout 2 (Chat) และ Layout 3 (Code/Preview) -->
+        <div class="flex flex-1 min-w-0">
+
+            <!-- Layout 2: ช่องแชทสำหรับใส่คำสั่ง AI (Chat Interface) - ใช้ flex-1 เพื่อแบ่งพื้นที่เท่ากับ Layout 3 (50%) -->
+            <div id="chat-panel" class="flex flex-col flex-1 bg-white custom-scroll overflow-y-auto min-w-0">
+                <header class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10 shadow-sm">
+                    <h2 class="text-lg font-semibold text-gray-800">1. ช่องสั่งงาน AI</h2>
+                    <p class="text-sm text-gray-500">พิมพ์คำสั่งของคุณเพื่อสร้างโค้ดหรือดีไซน์</p>
+                </header>
+
+                <!-- ส่วนแสดงประวัติการสนทนา (จำลอง) -->
+                <div class="flex-1 p-6 space-y-4 custom-scroll overflow-y-auto">
+                    <!-- ข้อความต้อนรับ AI -->
+                    <div class="flex justify-start">
+                        <div class="max-w-xs md:max-w-md p-4 bg-[#E0F7F7] text-[#1A7B7E] rounded-xl rounded-tl-sm shadow-md">
+                            <p class="font-bold">AI Helper</p>
+                            <p class="text-sm">สวัสดีครับ! คุณต้องการให้ผมช่วยสร้างโค้ด (HTML/React/อื่นๆ) หรือดีไซน์กราฟิกอะไรบ้างครับ?</p>
+                        </div>
+                    </div>
+                    <!-- ข้อความจำลองจากผู้ใช้ -->
+                    <div class="flex justify-end">
+                        <div class="max-w-xs md:max-w-md p-4 bg-primary-teal text-white rounded-xl rounded-br-sm shadow-md">
+                            <p class="text-sm">สร้างโค้ด HTML/Tailwind สำหรับ "หน้าลงทะเบียน" ที่มีปุ่มสีเขียวและใช้ฟอนต์ Inter</p>
+                        </div>
+                    </div>
+                    <!-- การตอบกลับโค้ดจำลองจาก AI -->
+                    <div class="flex justify-start">
+                        <div class="max-w-xs md:max-w-md p-4 bg-[#E0F7F7] text-[#1A7B7E] rounded-xl rounded-tl-sm shadow-md">
+                            <p class="font-bold">AI Helper</p>
+                            <p class="text-sm">รับทราบครับ! โค้ด HTML/Tailwind สำหรับหน้าลงทะเบียนถูกสร้างและแสดงในช่อง **3. แสดงผลโค้ด** แล้ว ลองสลับไปที่แท็บ **แสดงดีไซน์ (Preview)** เพื่อดูผลลัพธ์ได้เลยครับ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ช่องสำหรับป้อนคำสั่งใหม่ (Tech Card Style) -->
+                <footer class="p-4 border-t border-gray-200 bg-white sticky bottom-0 shadow-lg">
+                    <div class="flex items-center space-x-3">
+                        <!-- Textarea: Clean input area -->
+                        <textarea id="prompt-input" rows="2" class="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-teal focus:border-primary-teal transition duration-150 resize-none" placeholder="พิมพ์คำสั่งเพื่อสร้างโค้ด..."></textarea>
+                        <!-- Send Button: Gradient style -->
+                        <button class="px-6 py-2.5 bg-gradient-to-r from-[#53D4D6] to-[#37B2B5] text-white font-semibold rounded-lg shadow-lg hover:from-[#37B2B5] hover:to-[#2A9B9E] transition duration-300 transform hover:scale-[1.02]">
+                            ส่ง
+                        </button>
+                    </div>
+                </footer>
+            </div>
+
+            <!-- ตัวแบ่ง Layout 2 (Chat) และ Layout 3 (Code) -->
+            <div class="divider-v"></div>
+
+            <!-- Layout 3: แสดงผลโค้ด/ดีไซน์ (Code Output/Preview) - ใช้ flex-1 เพื่อแบ่งพื้นที่เท่ากับ Layout 2 (50%) -->
+            <div id="output-panel" class="flex flex-col flex-1 bg-gray-900 min-w-0">
+                <header class="p-4 bg-gray-800 border-b border-gray-700 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-white">3. แสดงผลลัพธ์</h2>
+                    <!-- Tabs สำหรับสลับ Code/Design -->
+                    <div class="flex space-x-2">
+                        <button id="tab-code" class="px-4 py-1.5 text-sm font-medium rounded-full bg-primary-teal text-white shadow-lg transition duration-150 hover:bg-dark-teal">
+                            โค้ดที่สร้าง (HTML)
+                        </button>
+                        <button id="tab-preview" class="px-4 py-1.5 text-sm font-medium rounded-full bg-gray-700 text-gray-300 transition duration-150 hover:bg-gray-600 hover:text-white">
+                            แสดงดีไซน์ (Preview)
+                        </button>
+                    </div>
+                </header>
+
+                <!-- ส่วนแสดงโค้ด (เริ่มต้น) -->
+                <div id="view-code" class="flex-1 p-4 overflow-y-auto custom-scroll text-sm text-green-300 bg-gray-900 font-mono">
+                    <pre><code>&lt;!-- โค้ดที่สร้างโดย AI จะปรากฏที่นี่ --&gt;
+&lt;div class="flex items-center justify-center min-h-screen bg-gray-100"&gt;
+  &lt;div class="p-8 bg-white rounded-xl shadow-2xl w-full max-w-md"&gt;
+    &lt;h2 class="text-2xl font-bold mb-6 text-center text-gray-800"&gt;ลงทะเบียนใหม่&lt;/h2&gt;
+    &lt;form&gt;
+      &lt;div class="mb-4"&gt;
+        &lt;label for="email" class="block text-sm font-medium text-gray-700"&gt;อีเมล&lt;/label&gt;
+        &lt;input type="email" id="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-teal focus:border-primary-teal" placeholder="your@email.com"&gt;
+      &lt;/div&gt;
+      &lt;div class="mb-6"&gt;
+        &lt;label for="password" class="block text-sm font-medium text-gray-700"&gt;รหัสผ่าน&lt;/label&gt;
+        &lt;input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-teal focus:border-primary-teal"&gt;
+      &lt;/div&gt;
+      &lt;button type="submit" class="w-full px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition duration-150 font-semibold"&gt;
+        ลงทะเบียน
+      &lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+
+                <!-- ส่วนแสดงดีไซน์กราฟิก (ซ่อนอยู่เริ่มต้น) -->
+                <div id="view-preview" class="flex-1 overflow-y-auto custom-scroll p-4 bg-gray-100 hidden">
+                    <!-- จำลองผลลัพธ์ดีไซน์กราฟิก (โค้ด HTML ที่สร้าง) -->
+                    <div class="flex items-center justify-center min-h-full p-4">
+                        <div class="p-8 bg-white rounded-xl shadow-2xl w-full max-w-md">
+                            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">ลงทะเบียนใหม่</h2>
+                            <form>
+                                <div class="mb-4">
+                                    <label for="preview-email" class="block text-sm font-medium text-gray-700">อีเมล</label>
+                                    <input type="email" id="preview-email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-teal focus:border-primary-teal" placeholder="your@email.com" value="user@example.com" readonly>
+                                </div>
+                                <div class="mb-6">
+                                    <label for="preview-password" class="block text-sm font-medium text-gray-700">รหัสผ่าน</label>
+                                    <input type="password" id="preview-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-teal focus:border-primary-teal" value="********" readonly>
+                                </div>
+                                <button type="button" class="w-full px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition duration-150 font-semibold">
+                                    ลงทะเบียน
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const resizer = document.getElementById('resizer');
+        const chatPanel = document.getElementById('chat-panel');
+        const outputPanel = document.getElementById('output-panel');
+
+        const tabCode = document.getElementById('tab-code');
+        const tabPreview = document.getElementById('tab-preview');
+        const viewCode = document.getElementById('view-code');
+        const viewPreview = document.getElementById('view-preview');
+
+        let isResizing = false;
+
+        // --- JavaScript สำหรับการปรับขนาด Sidebar (Layout 1) ---
+
+        resizer.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'col-resize';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isResizing) return;
+
+            // จำกัดขนาดขั้นต่ำและสูงสุดของ Sidebar (Layout 1)
+            // ขั้นต่ำ 80px สำหรับโหมดไอคอน, ขั้นสูงสุด 250px เพื่อเปิดให้แสดงข้อความได้บ้าง
+            const minWidth = 80; 
+            const maxWidth = 250; 
+            const newWidth = e.clientX;
+
+            if (newWidth >= minWidth && newWidth <= maxWidth) {
+                sidebar.style.width = newWidth + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.userSelect = '';
+                document.body.style.cursor = 'default';
+            }
+        });
+
+        // --- JavaScript สำหรับการสลับหน้า Code / Preview (Layout 3) ---
+
+        function switchView(viewName) {
+            // อัพเดตปุ่ม
+            if (viewName === 'code') {
+                tabCode.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
+                tabCode.classList.add('bg-primary-teal', 'text-white');
+                tabPreview.classList.remove('bg-primary-teal', 'text-white');
+                tabPreview.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
+                
+                // สลับการแสดงผล
+                viewCode.classList.remove('hidden');
+                viewPreview.classList.add('hidden');
+                outputPanel.classList.remove('bg-gray-100');
+                outputPanel.classList.add('bg-gray-900');
+            } else {
+                tabPreview.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
+                tabPreview.classList.add('bg-primary-teal', 'text-white');
+                tabCode.classList.remove('bg-primary-teal', 'text-white');
+                tabCode.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
+
+                // สลับการแสดงผล
+                viewPreview.classList.remove('hidden');
+                viewCode.classList.add('hidden');
+                outputPanel.classList.remove('bg-gray-900');
+                outputPanel.classList.add('bg-gray-100');
+            }
+        }
+
+        tabCode.addEventListener('click', () => switchView('code'));
+        tabPreview.addEventListener('click', () => switchView('preview'));
+
+        // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า: ให้ Sidebar มีความกว้างเริ่มต้น 80px
+        window.onload = function() {
+            sidebar.style.width = '80px';
+            switchView('code'); // แสดงโค้ดเริ่มต้น
+        };
+    </script>
+</body>
+</html>
