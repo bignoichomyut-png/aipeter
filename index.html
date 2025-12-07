@@ -84,6 +84,50 @@
             transform: scale(1.1);
         }
 
+        /* --- Custom Glow for Layout 3 Header Controls (Copy Button and Active Tab) --- */
+        .header-control-glow {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Copy Button Hover/Active (Retained for Copy Button) */
+        .header-control-glow:hover,
+        #copy-button.active {
+            transform: scale(1.08); 
+            box-shadow: 0 0 8px rgba(55, 178, 181, 0.5),
+                        0 0 12px rgba(55, 178, 181, 0.3);
+        }
+
+        /* NEW: Glow applied to the tab container */
+        #tab-group-container.active-group {
+            /* Simulating a contained 'running border' glow */
+            box-shadow: 0 0 12px rgba(55, 178, 181, 0.6),
+                        0 0 20px rgba(55, 178, 181, 0.3);
+            background-color: #f7f9fb; /* Slight background hint for the group area */
+        }
+        
+        /* NEW: Base style for tab items to ensure consistent sizing/appearance */
+        .tab-item {
+            transform: none; /* Remove previous scale transforms */
+            box-shadow: none; /* Remove previous shadows */
+            border: 2px solid transparent; /* Ensure border is reserved for active state */
+        }
+
+        /* NEW: Active Tab Item Style (No solid background, just border/text color) */
+        .tab-item.active-tab {
+            background-color: transparent !important; /* Remove solid background */
+            color: #37B2B5 !important; /* Teal text color */
+            border: 2px solid #37B2B5; /* Use a thin primary border */
+            font-weight: 600; /* semi-bold */
+        }
+
+        /* NEW: Inactive Tab Item Style */
+        .tab-item.inactive-tab {
+            background-color: #f0f4f7; /* Light neutral background for inactive */
+            color: #4b5563; /* Gray text color */
+            border-color: transparent;
+        }
+
+
         /* --- Custom Tech Input Glow Focus --- */
         .tech-input:focus {
             outline: none;
@@ -134,7 +178,8 @@
     <div class="flex bg-white text-gray-800 m-8 rounded-2xl shadow-2xl overflow-hidden main-card">
 
         <!-- Layout 1: แถบเครื่องมือ/เมนู (Fixed 80px - เท่ากับขนาดไอคอน) -->
-        <div id="sidebar" class="flex-shrink-0 bg-white border-r border-gray-200 w-[80px] rounded-l-2xl">
+        <!-- REMOVED: border-r border-gray-200 -->
+        <div id="sidebar" class="flex-shrink-0 bg-white w-[80px] rounded-l-2xl">
             <!-- Header: แสดงแค่ 'AI' ในโหมดไอคอน (h-20) -->
             <div class="p-4 border-b border-gray-200 h-20 flex items-center justify-center">
                 <h1 class="text-3xl font-bold text-gray-800">AI</h1>
@@ -167,24 +212,37 @@
                     </a>
                     
                     <!-- Sub-menu container for Project History -->
-                    <div id="project-history-submenu" class="absolute left-[80px] top-0 z-20 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden">
-                        <div class="text-xs font-semibold text-gray-500 pb-1 border-b border-gray-100 px-2 uppercase tracking-wider">เมนูประวัติโครงการ</div>
+                    <div id="project-history-submenu" class="absolute left-[80px] top-0 z-20 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 w-72 space-y-1 hidden">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 border-b border-gray-100 px-2 uppercase tracking-wider">โครงการที่เคยสร้าง</div>
                         
-                        <!-- 2a. เมนูย่อย 1: ฉบับร่าง (Drafts) -->
-                        <a href="#" title="ฉบับร่าง" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-gray-500">
-                                <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"></path>
+                        <!-- Project 1: Marketplace Landing (Current Design) -->
+                        <a href="#" data-project="marketplace" title="Marketplace Landing Page" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-red-500">
+                                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"></path>
                             </svg>
-                            <span class="text-sm">ฉบับร่าง (Drafts)</span>
+                            <span class="text-sm">E-Marketplace (Landing)</span>
                         </a>
-                        
-                        <!-- 2b. เมนูย่อย 2: โครงการที่เสร็จสมบูรณ์ (Final Projects) -->
-                        <a href="#" title="โครงการที่เสร็จสมบูรณ์" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-primary-teal">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
-                                <path d="M22 4L12 14.01l-3-3"></path>
+
+                        <!-- Project 2: Analytics Dashboard -->
+                        <a href="#" data-project="dashboard" title="Analytics Dashboard" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-blue-500">
+                                <rect x="3" y="3" width="7" height="9"></rect>
+                                <rect x="14" y="3" width="7" height="5"></rect>
+                                <rect x="14" y="12" width="7" height="9"></rect>
+                                <rect x="3" y="16" width="7" height="5"></rect>
                             </svg>
-                            <span class="text-sm">เสร็จสมบูรณ์ (Final)</span>
+                            <span class="text-sm">Minimal Analytics Dashboard</span>
+                        </a>
+
+                        <!-- Project 3: Blog Post Article -->
+                        <a href="#" data-project="blog" title="Blog Post Article" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-green-500">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <span class="text-sm">Minimal Blog Article</span>
                         </a>
                     </div>
                 </div>
@@ -363,7 +421,8 @@
         <div class="flex flex-1 min-w-0">
 
             <!-- Layout 2: ช่องแชทสำหรับใส่คำสั่ง AI (1 ส่วนของพื้นที่ที่เหลือ) -->
-            <div id="chat-panel" class="flex flex-col flex-1 bg-white border-r border-gray-200 custom-scroll overflow-y-auto min-w-0">
+            <!-- REMOVED: border-r border-gray-200 -->
+            <div id="chat-panel" class="flex flex-col flex-1 bg-white custom-scroll overflow-y-auto min-w-0">
                 <!-- Header (h-20) -->
                 <header class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10 shadow-sm h-20 flex flex-col justify-center">
                     <h2 class="text-lg font-semibold text-gray-800">ช่องสั่งงาน AI</h2>
@@ -373,23 +432,26 @@
                 <!-- ส่วนแสดงประวัติการสนทนา (จำลอง) -->
                 <div class="flex-1 p-6 space-y-4 custom-scroll overflow-y-auto">
                     <!-- ข้อความต้อนรับ AI: ปรับโค้งมนและ max-width -->
+                    <!-- UPDATED CONTENT -->
                     <div class="flex justify-start">
                         <div class="max-w-sm md:max-w-lg p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-md">
                             <p class="font-bold">AI Helper</p>
-                            <p class="text-sm">สวัสดีครับ! คุณต้องการให้ผมช่วยสร้างโค้ด (HTML/React/อื่นๆ) หรือดีไซน์กราฟิกอะไรบ้างครับ?</p>
+                            <p class="text-sm">สวัสดีครับ! ผมพร้อมที่จะช่วยออกแบบเว็บไซต์ E-Marketplace สไตล์โมเดิร์นและมินิมอลให้คุณแล้วครับ คุณต้องการเริ่มจากส่วนไหนดีครับ?</p>
                         </div>
                     </div>
-                    <!-- ข้อความจำลองจากผู้ใช้: ปรับโค้งมนและ max-width -->
+                    <!-- ข้อความจำลองจากผู้ใช้: ปรับโค้งมนและ max-w -->
+                    <!-- UPDATED CONTENT -->
                     <div class="flex justify-end">
                         <div class="max-w-sm md:max-w-lg p-4 bg-primary-teal text-white rounded-3xl rounded-br-lg shadow-xl">
-                            <p class="text-sm">สร้างโค้ด HTML/Tailwind สำหรับ "หน้าลงทะเบียน" ที่มีปุ่มสีเขียวและใช้ฟอนต์ Inter</p>
+                            <p class="text-sm">ช่วยออกแบบหน้าแรกของ MarketPlace ที่เน้นสินค้าพรีเมียม, ใช้โทนสีขาว/เทา/ดำ และมีเลย์เอาต์แบบกริดที่ดูสะอาดตา</p>
                         </div>
                     </div>
                     <!-- การตอบกลับโค้ดจำลองจาก AI: ปรับโค้งมนและ max-width -->
+                    <!-- UPDATED CONTENT -->
                     <div class="flex justify-start">
                         <div class="max-w-sm md:max-w-lg p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-md">
                             <p class="font-bold">AI Helper</p>
-                            <p class="text-sm">รับทราบครับ! โค้ด HTML/Tailwind สำหรับหน้าลงทะเบียนถูกสร้างและแสดงในช่อง **แสดงผลลัพธ์** แล้ว ลองสลับไปที่แท็บ **แสดงดีไซน์ (Preview)** เพื่อดูผลลัพธ์ได้เลยครับ</p>
+                            <p class="text-sm">รับทราบครับ! นี่คือโค้ด HTML/Tailwind สำหรับหน้าแรก MarketPlace ที่เน้นความโมเดิร์นและมินิมอลครับ ลองดูผลลัพธ์ในแท็บแสดงดีไซน์ได้เลยครับ</p>
                         </div>
                     </div>
                 </div>
@@ -413,23 +475,26 @@
             <!-- Layout 3: แสดงผลโค้ด/ดีไซน์ (2 ส่วนของพื้นที่ที่เหลือ - กว้างกว่า L2 สองเท่า) -->
             <div id="output-panel" class="flex flex-col flex-2 bg-gray-900 min-w-0 rounded-r-2xl overflow-hidden">
                 <!-- Header (h-20) -->
-                <header class="p-4 bg-gray-800 border-b border-gray-700 flex items-center justify-between h-20 rounded-tr-2xl">
-                    <h2 class="text-lg font-semibold text-white">แสดงผลลัพธ์</h2>
+                <header class="p-4 bg-white border-b border-gray-200 flex items-center justify-between h-20 rounded-tr-2xl">
+                    <h2 class="text-lg font-semibold text-gray-800">แสดงผลลัพธ์</h2>
                     <!-- Controls (Copy Button & Tabs) -->
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-4">
                         <!-- NEW: Copy Button -->
-                        <button id="copy-button" title="คัดลอกโค้ด" class="flex items-center justify-center p-2 text-sm font-medium rounded-full bg-gray-700 text-gray-300 transition duration-150 hover:bg-primary-teal hover:text-white transform hover:scale-105">
+                        <!-- The copy button glow remains individual -->
+                        <button id="copy-button" title="คัดลอกโค้ด" class="header-control-glow flex items-center justify-center p-2 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150 transform">
                             <svg id="copy-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <!-- Clipboard Icon -->
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
                             </svg>
                         </button>
-                        <!-- Tabs -->
-                        <div class="flex space-x-2">
-                            <button id="tab-code" class="px-4 py-1.5 text-sm font-medium rounded-full bg-primary-teal text-white shadow-lg transition duration-150 hover:bg-dark-teal">
+                        <!-- Tabs Group - ADDED: p-1 for glow spacing, transition for effect -->
+                        <div id="tab-group-container" class="flex space-x-2 p-1 rounded-full transition duration-300">
+                            <!-- Tab 1: Code -->
+                            <button id="tab-code" class="tab-item px-4 py-1.5 text-sm font-medium rounded-full transition duration-150">
                                 โค้ดที่สร้าง (HTML)
                             </button>
-                            <button id="tab-preview" class="px-4 py-1.5 text-sm font-medium rounded-full bg-gray-700 text-gray-300 transition duration-150 hover:bg-gray-600 hover:text-white">
+                            <!-- Tab 2: Preview -->
+                            <button id="tab-preview" class="tab-item px-4 py-1.5 text-sm font-medium rounded-full transition duration-150">
                                 แสดงดีไซน์ (Preview)
                             </button>
                         </div>
@@ -440,46 +505,125 @@
                 <div id="view-code" class="flex-1 p-4 overflow-y-auto custom-scroll text-sm text-green-300 bg-gray-900 font-mono">
                     <pre>
                         <!-- ADDED ID for JS targeting -->
-                        <code id="code-content">&lt;!-- โค้ดที่สร้างโดย AI จะปรากฏที่นี่ --&gt;
-&lt;div class="flex items-center justify-center min-h-screen bg-gray-100"&gt;
-  &lt;div class="p-8 bg-white rounded-xl shadow-2xl w-full max-w-md"&gt;
-    &lt;h2 class="text-2xl font-bold mb-6 text-center text-gray-800"&gt;ลงทะเบียนใหม่&lt;/h2&gt;
-    &lt;form&gt;
-      &lt;div class="mb-4"&gt;
-        &lt;label for="email" class="block text-sm font-medium text-gray-700"&gt;อีเมล&lt;/label&gt;
-        &lt;input type="email" id="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-teal focus:border-primary-teal" placeholder="your@email.com"&gt;
-      &lt;/div&gt;
-      &lt;div class="mb-6"&gt;
-        &lt;label for="password" class="block text-sm font-medium text-gray-700"&gt;รหัสผ่าน&lt;/label&gt;
-        &lt;input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary-teal focus:border-primary-teal"&gt;
-      &lt;/div&gt;
-      &lt;button type="submit" class="w-full px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition duration-150 font-semibold"&gt;
-        ลงทะเบียน
-      &lt;/button&gt;
-    &lt;/form&gt;
-  &lt;/div&gt;
+                        <code id="code-content">&lt;!-- E-Marketplace Hero and Product Grid (Modern Minimalist) --&gt;
+&lt;div class="p-8 bg-white min-h-screen"&gt;
+    &lt;!-- Hero Section --&gt;
+    &lt;header class="text-center mb-12"&gt;
+        &lt;p class="text-sm uppercase tracking-widest text-gray-500"&gt;Curated Goods&lt;/p&gt;
+        &lt;h1 class="text-5xl font-extrabold text-gray-900 mt-2"&gt;The Minimalist Collection&lt;/h1&gt;
+        &lt;p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto"&gt;พบกับสินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย&lt;/p&gt;
+    &lt;/header&gt;
+
+    &lt;!-- Product Grid --&gt;
+    &lt;div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"&gt;
+        &lt;!-- Product Card 1 (Minimalist Desk Lamp) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
+            &lt;img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Minimalist+Lamp" onerror="this.src='https://placehold.co/400x400/1f2937/ffffff?text=Product+A'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Minimalist Desk Lamp&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Lighting&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;4,990 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Product Card 2 (Ceramic Coffee Mug) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
+            &lt;img src="https://placehold.co/400x400/E5E7EB/4B5563?text=Ceramic+Mug" onerror="this.src='https://placehold.co/400x400/4b5563/ffffff?text=Product+B'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Ceramic Coffee Mug&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Kitchenware&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;750 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Product Card 3 (Leather Wallet) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
+            &lt;img src="https://placehold.co/400x400/9CA3AF/FFFFFF?text=Leather+Wallet" onerror="this.src='https://placehold.co/400x400/9ca3af/ffffff?text=Product+C'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Leather Wallet&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Accessories&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;2,100 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Product Card 4 (Noise-Cancelling Earbuds) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
+            &lt;img src="https://placehold.co/400x400/374151/FFFFFF?text=Wireless+Earbuds" onerror="this.src='https://placehold.co/400x400/d1d5db/1f2937?text=Product+D'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Noise-Cancelling Earbuds&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Electronics&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;8,500 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                 </div>
 
                 <!-- ส่วนแสดงดีไซน์กราฟิก (ซ่อนอยู่เริ่มต้น) -->
                 <div id="view-preview" class="flex-1 overflow-y-auto custom-scroll p-4 bg-gray-100 hidden">
                     <!-- จำลองผลลัพธ์ดีไซน์กราฟิก (โค้ด HTML ที่สร้าง) -->
-                    <div class="flex items-center justify-center min-h-full p-4">
-                        <div class="p-8 bg-white rounded-xl shadow-2xl w-full max-w-md">
-                            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">ลงทะเบียนใหม่</h2>
-                            <form>
-                                <div class="mb-4">
-                                    <label for="preview-email" class="block text-sm font-medium text-gray-700">อีเมล</label>
-                                    <input type="email" id="preview-email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-teal focus:border-primary-teal" placeholder="your@email.com" value="user@example.com" readonly>
+                    <!-- UPDATED CONTENT FOR PREVIEW -->
+                    <div class="p-8 bg-white min-h-full">
+                        <!-- Hero Section -->
+                        <header class="text-center mb-12">
+                            <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>
+                            <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>
+                            <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">พบกับสินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย</p>
+                        </header>
+
+                        <!-- Product Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <!-- Product Card 1 -->
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Minimalist+Lamp" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Minimalist Desk Lamp</h3>
+                                <p class="text-sm text-gray-500">Lighting</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">4,990 บาท</span>
+                                    <button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
                                 </div>
-                                <div class="mb-6">
-                                    <label for="preview-password" class="block text-sm font-medium text-gray-700">รหัสผ่าน</label>
-                                    <input type="password" id="preview-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-teal focus:border-primary-teal" value="********" readonly>
+                            </div>
+
+                            <!-- Product Card 2 -->
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/E5E7EB/4B5563?text=Ceramic+Mug" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Ceramic Coffee Mug</h3>
+                                <p class="text-sm text-gray-500">Kitchenware</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">750 บาท</span>
+                                    <button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
                                 </div>
-                                <button type="button" class="w-full px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 transition duration-150 font-semibold">
-                                    ลงทะเบียน
-                                </button>
-                            </form>
+                            </div>
+
+                            <!-- Product Card 3 -->
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/9CA3AF/FFFFFF?text=Leather+Wallet" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Leather Wallet</h3>
+                                <p class="text-sm text-gray-500">Accessories</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">2,100 บาท</span>
+                                    <button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
+                                </div>
+                            </div>
+
+                            <!-- Product Card 4 -->
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/374151/FFFFFF?text=Wireless+Earbuds" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Noise-Cancelling Earbuds</h3>
+                                <p class="text-sm text-gray-500">Electronics</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">8,500 บาท</span>
+                                    <button type="button" class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -511,6 +655,8 @@
         // CONSTANTS FOR LAYOUT 3
         const copyButton = document.getElementById('copy-button');
         const codeContent = document.getElementById('code-content');
+        const tabGroupContainer = document.getElementById('tab-group-container'); // NEW CONTAINER
+        const projectItems = document.querySelectorAll('.project-item'); // Get all new project links
 
         // LAYOUT 1 SUB-MENUS
         const projectHistoryButton = document.getElementById('project-history-button');
@@ -529,6 +675,288 @@
         const modalTitle = document.getElementById('modal-title');
         const modalMessage = document.getElementById('modal-message');
         const modalActions = document.getElementById('modal-actions');
+
+        // --- PROJECT CONTENT DATA ---
+        // Project data stored as strings to be injected into the DOM
+        const projectData = {
+            // 1. E-Marketplace (Current Default)
+            marketplace: {
+                code: `&lt;!-- E-Marketplace Hero and Product Grid (Modern Minimalist) --&gt;
+&lt;div class="p-8 bg-white min-h-screen"&gt;
+    &lt;!-- Hero Section --&gt;
+    &lt;header class="text-center mb-12"&gt;
+        &lt;p class="text-sm uppercase tracking-widest text-gray-500"&gt;Curated Goods&lt;/p&gt;
+        &lt;h1 class="text-5xl font-extrabold text-gray-900 mt-2"&gt;The Minimalist Collection&lt;/h1&gt;
+        &lt;p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto"&gt;พบกับสินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย&lt;/p&gt;
+    &lt;/header&gt;
+
+    &lt;!-- Product Grid --&gt;
+    &lt;div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"&gt;
+        &lt;!-- Product Card 1 (Minimalist Desk Lamp) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Minimalist+Lamp" onerror="this.src='https://placehold.co/400x400/1f2937/ffffff?text=Product+A'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Minimalist Desk Lamp&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Lighting&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;4,990 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Product Card 2 (Ceramic Coffee Mug) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;img src="https://placehold.co/400x400/E5E7EB/4B5563?text=Ceramic+Mug" onerror="this.src='https://placehold.co/400x400/4b5563/ffffff?text=Product+B'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Ceramic Coffee Mug&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Kitchenware&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;750 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Product Card 3 (Leather Wallet) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;img src="https://placehold.co/400x400/9CA3AF/FFFFFF?text=Leather+Wallet" onerror="this.src='https://placehold.co/400x400/9ca3af/ffffff?text=Product+C'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Leather Wallet&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Accessories&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;2,100 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Product Card 4 (Noise-Cancelling Earbuds) --&gt;
+        &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
+            &lt;img src="https://placehold.co/400x400/374151/FFFFFF?text=Wireless+Earbuds" onerror="this.src='https://placehold.co/400x400/d1d5db/1f2937?text=Product+D'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
+            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Noise-Cancelling Earbuds&lt;/h3&gt;
+            &lt;p class="text-sm text-gray-500"&gt;Electronics&lt;/p&gt;
+            &lt;div class="flex justify-between items-center mt-3"&gt;
+                &lt;span class="text-xl font-bold text-gray-900"&gt;8,500 บาท&lt;/span&gt;
+                &lt;button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition"&gt;ดูสินค้า&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;`,
+                preview: `<div class="p-8 bg-white min-h-full">
+                        <header class="text-center mb-12">
+                            <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>
+                            <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>
+                            <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">พบกับสินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย</p>
+                        </header>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Minimalist+Lamp" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Minimalist Desk Lamp</h3>
+                                <p class="text-sm text-gray-500">Lighting</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">4,990 บาท</span>
+                                    <button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
+                                </div>
+                            </div>
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/E5E7EB/4B5563?text=Ceramic+Mug" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Ceramic Coffee Mug</h3>
+                                <p class="text-sm text-gray-500">Kitchenware</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">750 บาท</span>
+                                    <button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
+                                </div>
+                            </div>
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/9CA3AF/FFFFFF?text=Leather+Wallet" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Leather Wallet</h3>
+                                <p class="text-sm text-gray-500">Accessories</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">2,100 บาท</span>
+                                    <button class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
+                                </div>
+                            </div>
+                            <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300">
+                                <img src="https://placehold.co/400x400/374151/FFFFFF?text=Wireless+Earbuds" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
+                                <h3 class="text-lg font-semibold text-gray-800">Noise-Cancelling Earbuds</h3>
+                                <p class="text-sm text-gray-500">Electronics</p>
+                                <div class="flex justify-between items-center mt-3">
+                                    <span class="text-xl font-bold text-gray-900">8,500 บาท</span>
+                                    <button type="button" class="px-3 py-1 text-sm text-primary-teal border border-primary-teal rounded-full hover:bg-primary-teal hover:text-white transition">ดูสินค้า</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`,
+            },
+            // 2. Minimal Analytics Dashboard
+            dashboard: {
+                code: `&lt;!-- Minimal Analytics Dashboard Layout --&gt;
+&lt;div class="p-8 bg-gray-50 min-h-screen"&gt;
+    &lt;h1 class="text-3xl font-bold text-gray-800 mb-6"&gt;Dashboard Overview&lt;/h1&gt;
+    
+    &lt;!-- Stats Grid --&gt;
+    &lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10"&gt;
+        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
+            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Revenue&lt;/p&gt;
+            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;$12,450&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
+            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Users&lt;/p&gt;
+            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;3,210&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
+            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Orders&lt;/p&gt;
+            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;450&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
+            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Bounce Rate&lt;/p&gt;
+            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;15.3%&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Chart and Table --&gt;
+    &lt;div class="grid grid-cols-1 lg:grid-cols-3 gap-6"&gt;
+        &lt;!-- Main Chart --&gt;
+        &lt;div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl border border-gray-100"&gt;
+            &lt;h2 class="text-xl font-semibold mb-4 text-gray-800"&gt;Sales Performance (Last 30 Days)&lt;/h2&gt;
+            &lt;!-- Placeholder for Chart --&gt;
+            &lt;div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 font-mono"&gt;
+                [Area Chart Placeholder]
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Recent Activity / Table --&gt;
+        &lt;div class="bg-white p-6 rounded-lg shadow-xl border border-gray-100"&gt;
+            &lt;h2 class="text-xl font-semibold mb-4 text-gray-800"&gt;Recent Orders&lt;/h2&gt;
+            &lt;ul class="space-y-3"&gt;
+                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
+                    &lt;span class="font-medium"&gt;#ORDER-9876&lt;/span&gt;
+                    &lt;span class="text-green-500 font-semibold"&gt;+$750&lt;/span&gt;
+                &lt;/li&gt;
+                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
+                    &lt;span class="font-medium"&gt;#ORDER-9875&lt;/span&gt;
+                    &lt;span class="text-green-500 font-semibold"&gt;+$499&lt;/span&gt;
+                &lt;/li&gt;
+                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
+                    &lt;span class="font-medium"&gt;#ORDER-9874&lt;/span&gt;
+                    &lt;span class="text-red-500 font-semibold"&gt;-$20 (Refund)&lt;/span&gt;
+                &lt;/li&gt;
+                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
+                    &lt;span class="font-medium"&gt;#ORDER-9873&lt;/span&gt;
+                    &lt;span class="text-green-500 font-semibold"&gt;+$125&lt;/span&gt;
+                &lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;`,
+                preview: `<div class="p-8 bg-gray-50 min-h-full">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
+                            <p class="text-sm text-gray-500 uppercase tracking-wider">Revenue</p>
+                            <p class="text-2xl font-extrabold text-gray-900 mt-1">$12,450</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
+                            <p class="text-sm text-gray-500 uppercase tracking-wider">Users</p>
+                            <p class="text-2xl font-extrabold text-gray-900 mt-1">3,210</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
+                            <p class="text-sm text-gray-500 uppercase tracking-wider">Orders</p>
+                            <p class="text-2xl font-extrabold text-gray-900 mt-1">450</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
+                            <p class="text-sm text-gray-500 uppercase tracking-wider">Bounce Rate</p>
+                            <p class="text-2xl font-extrabold text-gray-900 mt-1">15.3%</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl border border-gray-100">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-800">Sales Performance (Last 30 Days)</h2>
+                            <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 font-mono">
+                                [Area Chart Placeholder]
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-xl border border-gray-100">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-800">Recent Orders</h2>
+                            <ul class="space-y-3">
+                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
+                                    <span class="font-medium">#ORDER-9876</span>
+                                    <span class="text-green-500 font-semibold">+$750</span>
+                                </li>
+                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
+                                    <span class="font-medium">#ORDER-9875</span>
+                                    <span class="text-green-500 font-semibold">+$499</span>
+                                </li>
+                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
+                                    <span class="font-medium">#ORDER-9874</span>
+                                    <span class="text-red-500 font-semibold">-$20 (Refund)</span>
+                                </li>
+                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
+                                    <span class="font-medium">#ORDER-9873</span>
+                                    <span class="text-green-500 font-semibold">+$125</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>`,
+            },
+            // 3. Minimal Blog Post Article
+            blog: {
+                code: `&lt;!-- Minimal Blog Post Article Layout --&gt;
+&lt;div class="p-8 bg-white min-h-screen flex justify-center"&gt;
+    &lt;div class="max-w-3xl w-full"&gt;
+        &lt;header class="text-center mb-10"&gt;
+            &lt;p class="text-sm uppercase tracking-widest text-primary-teal font-semibold"&gt;Design &amp; Technology&lt;/p&gt;
+            &lt;h1 class="text-4xl font-extrabold text-gray-900 mt-2 leading-tight"&gt;Why Minimalist Design Still Wins in 2025&lt;/h1&gt;
+            &lt;p class="text-base text-gray-500 mt-3"&gt;By Jane Doe | October 26, 2025 | 8 min read&lt;/p&gt;
+        &lt;/header&gt;
+
+        &lt;!-- Featured Image Placeholder --&gt;
+        &lt;img src="https://placehold.co/1200x500/F3F4F6/9CA3AF?text=Featured+Article+Image" class="w-full h-auto object-cover rounded-lg mb-8 shadow-lg"&gt;
+
+        &lt;!-- Content Body --&gt;
+        &lt;article class="text-gray-700 leading-relaxed text-lg space-y-6"&gt;
+            &lt;p&gt;Minimalism, at its core, is the art of knowing what to leave out, not what to put in. In the digital realm, this philosophy translates to cleaner interfaces, faster load times, and crucially, better user focus. We often see complex designs cluttering the user experience...&lt;/p&gt;
+            
+            &lt;blockquote class="border-l-4 border-primary-teal pl-4 italic text-gray-600 my-8"&gt;
+                "Simplicity is the ultimate sophistication." - Leonardo da Vinci
+            &lt;/blockquote&gt;
+            
+            &lt;h2 class="text-2xl font-bold text-gray-900 pt-4"&gt;The Power of Negative Space&lt;/h2&gt;
+            &lt;p&gt;Whitespace, or negative space, is not wasted space. It is a design element that gives your content room to breathe. When building interfaces, generous padding and clear visual hierarchy guide the user effortlessly through the information.&lt;/p&gt;
+
+            &lt;ul class="list-disc list-inside space-y-2 pl-4"&gt;
+                &lt;li&gt;Improved Readability and Scannability.&lt;/li&gt;
+                &lt;li&gt;Higher perceived quality of content.&lt;/li&gt;
+                &lt;li&gt;Reduced cognitive load for the user.&lt;/li&gt;
+            &lt;/ul&gt;
+            
+            &lt;p&gt;Ultimately, successful minimalist design is about prioritization. It forces us to ask: what is the single most important action or piece of information on this screen?&lt;/p&gt;
+        &lt;/article&gt;
+    &lt;/div&gt;
+&lt;/div&gt;`,
+                preview: `<div class="p-8 bg-white min-h-full flex justify-center">
+                    <div class="max-w-3xl w-full">
+                        <header class="text-center mb-10">
+                            <p class="text-sm uppercase tracking-widest text-primary-teal font-semibold">Design & Technology</p>
+                            <h1 class="text-4xl font-extrabold text-gray-900 mt-2 leading-tight">Why Minimalist Design Still Wins in 2025</h1>
+                            <p class="text-base text-gray-500 mt-3">By Jane Doe | October 26, 2025 | 8 min read</p>
+                        </header>
+                        <img src="https://placehold.co/1200x500/F3F4F6/9CA3AF?text=Featured+Article+Image" class="w-full h-auto object-cover rounded-lg mb-8 shadow-lg">
+                        <article class="text-gray-700 leading-relaxed text-lg space-y-6">
+                            <p>Minimalism, at its core, is the art of knowing what to leave out, not what to put in. In the digital realm, this philosophy translates to cleaner interfaces, faster load times, and crucially, better user focus. We often see complex designs cluttering the user experience...</p>
+                            <blockquote class="border-l-4 border-primary-teal pl-4 italic text-gray-600 my-8">
+                                "Simplicity is the ultimate sophistication." - Leonardo da Vinci
+                            </blockquote>
+                            <h2 class="text-2xl font-bold text-gray-900 pt-4">The Power of Negative Space</h2>
+                            <p>Whitespace, or negative space, is not wasted space. It is a design element that gives your content room to breathe. When building interfaces, generous padding and clear visual hierarchy guide the user effortlessly through the information.</p>
+                            <ul class="list-disc list-inside space-y-2 pl-4">
+                                <li>Improved Readability and Scannability.</li>
+                                <li>Higher perceived quality of content.</li>
+                                <li>Reduced cognitive load for the user.</li>
+                            </ul>
+                            <p>Ultimately, successful minimalist design is about prioritization. It forces us to ask: what is the single most important action or piece of information on this screen?</p>
+                        </article>
+                    </div>
+                </div>`,
+            }
+        };
+
 
         // --- MODAL FUNCTIONS ---
 
@@ -711,35 +1139,88 @@
             }
         }
 
+        // Define class sets for clarity in JS
+        const tabActiveStyle = ['active-tab']; 
+        const tabInactiveStyle = ['inactive-tab']; 
+        const tabCommonClasses = ['px-4', 'py-1.5', 'text-sm', 'font-medium', 'rounded-full', 'transition', 'duration-150']; 
+
+        // Helper function for cleanup
+        function cleanUpClasses(element) {
+             // Remove all classes that define color, background, scale, shadow from the old scheme and current active/inactive states
+             element.classList.remove('bg-primary-teal', 'text-white', 'hover:bg-dark-teal', 'shadow-lg', 'bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'active-tab', 'inactive-tab', 'active');
+             element.classList.add(...tabCommonClasses);
+        }
+
+
         // ฟังก์ชันสลับหน้า Code / Preview (Layout 3)
         function switchView(viewName) {
-            // อัพเดตปุ่ม
+            
+            // 1. Update Group Glow
+            // Remove glow first
+            tabGroupContainer.classList.remove('active-group'); 
+            // Add glow back after a short delay to trigger the transition effect when switching
+            setTimeout(() => {
+                tabGroupContainer.classList.add('active-group');
+            }, 50);
+
+
+            // 2. Update button styles
             if (viewName === 'code') {
-                tabCode.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
-                tabCode.classList.add('bg-primary-teal', 'text-white');
-                tabPreview.classList.remove('bg-primary-teal', 'text-white');
-                tabPreview.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
-                
-                // สลับการแสดงผล
+                // Tab Code (Active: Border/Text only, no background fill)
+                cleanUpClasses(tabCode);
+                tabCode.classList.add(...tabActiveStyle); 
+                tabCode.classList.add('shadow-lg'); // Keep shadow for active tab for subtle depth
+
+                // Tab Preview (Inactive: Light gray fill)
+                cleanUpClasses(tabPreview);
+                tabPreview.classList.add(...tabInactiveStyle);
+
+                // 3. Update view panels (No change here)
                 viewCode.classList.remove('hidden');
                 viewPreview.classList.add('hidden');
                 outputPanel.classList.remove('bg-gray-100');
                 outputPanel.classList.add('bg-gray-900');
-                // แสดงปุ่มคัดลอกเมื่ออยู่หน้า Code
                 copyButton.classList.remove('hidden');
             } else {
-                tabPreview.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
-                tabPreview.classList.add('bg-primary-teal', 'text-white');
-                tabCode.classList.remove('bg-primary-teal', 'text-white');
-                tabCode.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
+                // Tab Preview (Active: Border/Text only, no background fill)
+                cleanUpClasses(tabPreview);
+                tabPreview.classList.add(...tabActiveStyle);
+                tabPreview.classList.add('shadow-lg');
 
-                // สลับการแสดงผล
+                // Tab Code (Inactive: Light gray fill)
+                cleanUpClasses(tabCode);
+                tabCode.classList.add(...tabInactiveStyle);
+
+                // 3. Update view panels (No change here)
                 viewPreview.classList.remove('hidden');
                 viewCode.classList.add('hidden');
                 outputPanel.classList.remove('bg-gray-900');
                 outputPanel.classList.add('bg-gray-100');
-                // ซ่อนปุ่มคัดลอกเมื่ออยู่หน้า Preview
                 copyButton.classList.add('hidden');
+            }
+        }
+        
+        // --- NEW FUNCTION: Load Project Content ---
+        function loadProjectDesign(event) {
+            event.preventDefault();
+            closeAllSubMenus(); // Close the project history menu
+
+            const projectId = event.currentTarget.getAttribute('data-project');
+            const data = projectData[projectId];
+
+            if (data) {
+                // 1. Load the new content
+                codeContent.textContent = data.code;
+                viewPreview.innerHTML = data.preview;
+
+                // 2. Switch view to preview
+                switchView('preview');
+                
+                // Optional: Scroll to top of preview (in a real app, this is helpful)
+                viewPreview.scrollTop = 0;
+            } else {
+                console.error(`Project ID "${projectId}" not found.`);
+                showModal('ข้อผิดพลาด', 'ไม่พบข้อมูลโครงการที่เลือก กรุณาลองใหม่', [{ text: 'ปิด', type: 'secondary' }]);
             }
         }
 
@@ -769,15 +1250,19 @@
 
             // Provide visual feedback (Change icon and title)
             if (success) {
+                // Trigger glow effect for a moment
+                copyButton.classList.add('active'); 
+
                 const originalTitle = copyButton.getAttribute('title');
                 // Checkmark icon (SVG)
                 copyButton.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
                 copyButton.setAttribute('title', 'คัดลอกแล้ว!');
 
                 setTimeout(() => {
-                    // Restore original icon and title
+                    // Restore original icon, title, and remove active class
                     copyButton.innerHTML = `<svg id="copy-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4-4m0 0l-4 4m4-4v12"></path></svg>`;
                     copyButton.setAttribute('title', originalTitle);
+                    copyButton.classList.remove('active'); 
                 }, 2000);
             } else {
                 // In case of failure, use a message box (not alert()) for feedback
@@ -814,6 +1299,11 @@
         aiSettingsButton.addEventListener('click', toggleAiSettingsSubMenu);
         userManualButton.addEventListener('click', toggleUserManualSubMenu); 
         designTemplatesButton.addEventListener('click', toggleDesignTemplatesSubMenu);
+        
+        // NEW PROJECT HISTORY ITEM LISTENERS
+        projectItems.forEach(item => {
+            item.addEventListener('click', loadProjectDesign);
+        });
 
         // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า
         window.onload = function() {
