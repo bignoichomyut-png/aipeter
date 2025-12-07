@@ -83,6 +83,14 @@
                         0 0 25px rgba(55, 178, 181, 0.2);
             transform: scale(1.1);
         }
+        
+        /* NEW: Tactile feedback on click/tap for all menu items */
+        .menu-item:active .icon-glow-wrapper {
+            /* Scale down slightly from 1.1 (hover size) to 1.05 on actual click/tap */
+            transform: scale(1.05); 
+            /* Instant feedback on press, then transition back */
+            transition: transform 0.05s ease-out, box-shadow 0.05s ease-out; 
+        }
 
         /* --- Custom Glow for Layout 3 Header Controls (Copy Button and Active Tab) --- */
         .header-control-glow {
@@ -186,8 +194,8 @@
             </div>
             <nav class="p-2 space-y-4">
                 <!-- 1. สร้างโค้ดใหม่ (New Code - Happy Document) -->
-                <!-- ADDED ID for JS targeting -->
-                <a href="#" title="สร้างโค้ดใหม่" class="menu-item active" id="new-code-button">
+                <!-- UPDATED: Removed the 'active' class so it only glows on hover/click -->
+                <a href="#" title="สร้างโค้ดใหม่" class="menu-item" id="new-code-button">
                     <div class="icon-glow-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
                             <rect x="10" y="8" width="28" height="32" rx="4" fill="#E0F7F7" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
@@ -345,7 +353,7 @@
                         </a>
 
                         <!-- 4c. แดชบอร์ดสมัยใหม่ (Modern Dashboard) -->
-                        <a href="#" title="แดชบอร์ดสมัยใหม่" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                        <a href="#" data-project="dashboard" title="แดชบอร์ดสมัยใหม่" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-green-500">
                                 <rect x="3" y="3" width="7" height="9"></rect>
                                 <rect x="14" y="3" width="7" height="5"></rect>
@@ -518,7 +526,6 @@
     &lt;div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"&gt;
         &lt;!-- Product Card 1 (Minimalist Desk Lamp) --&gt;
         &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
-            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
             &lt;img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Minimalist+Lamp" onerror="this.src='https://placehold.co/400x400/1f2937/ffffff?text=Product+A'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
             &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Minimalist Desk Lamp&lt;/h3&gt;
             &lt;p class="text-sm text-gray-500"&gt;Lighting&lt;/p&gt;
@@ -530,7 +537,6 @@
 
         &lt;!-- Product Card 2 (Ceramic Coffee Mug) --&gt;
         &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
-            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
             &lt;img src="https://placehold.co/400x400/E5E7EB/4B5563?text=Ceramic+Mug" onerror="this.src='https://placehold.co/400x400/4b5563/ffffff?text=Product+B'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
             &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Ceramic Coffee Mug&lt;/h3&gt;
             &lt;p class="text-sm text-gray-500"&gt;Kitchenware&lt;/p&gt;
@@ -542,7 +548,6 @@
 
         &lt;!-- Product Card 3 (Leather Wallet) --&gt;
         &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
-            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
             &lt;img src="https://placehold.co/400x400/9CA3AF/FFFFFF?text=Leather+Wallet" onerror="this.src='https://placehold.co/400x400/9ca3af/ffffff?text=Product+C'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
             &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Leather Wallet&lt;/h3&gt;
             &lt;p class="text-sm text-gray-500"&gt;Accessories&lt;/p&gt;
@@ -554,7 +559,6 @@
 
         &lt;!-- Product Card 4 (Noise-Cancelling Earbuds) --&gt;
         &lt;div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-md hover:shadow-xl transition duration-300"&gt;
-            &lt;!-- UPDATED: Using a reliable minimalist placeholder URL --&gt;
             &lt;img src="https://placehold.co/400x400/374151/FFFFFF?text=Wireless+Earbuds" onerror="this.src='https://placehold.co/400x400/d1d5db/1f2937?text=Product+D'" class="w-full h-auto object-cover rounded-md mb-4 aspect-square"&gt;
             &lt;h3 class="text-lg font-semibold text-gray-800"&gt;Noise-Cancelling Earbuds&lt;/h3&gt;
             &lt;p class="text-sm text-gray-500"&gt;Electronics&lt;/p&gt;
@@ -783,178 +787,243 @@
                         </div>
                     </div>`,
             },
-            // 2. Minimal Analytics Dashboard
-            dashboard: {
-                code: `&lt;!-- Minimal Analytics Dashboard Layout --&gt;
-&lt;div class="p-8 bg-gray-50 min-h-screen"&gt;
-    &lt;h1 class="text-3xl font-bold text-gray-800 mb-6"&gt;Dashboard Overview&lt;/h1&gt;
-    
-    &lt;!-- Stats Grid --&gt;
-    &lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10"&gt;
-        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
-            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Revenue&lt;/p&gt;
-            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;$12,450&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
-            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Users&lt;/p&gt;
-            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;3,210&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
-            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Orders&lt;/p&gt;
-            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;450&lt;/p&gt;
-        &lt;/div&gt;
-        &lt;div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100"&gt;
-            &lt;p class="text-sm text-gray-500 uppercase tracking-wider"&gt;Bounce Rate&lt;/p&gt;
-            &lt;p class="text-2xl font-extrabold text-gray-900 mt-1"&gt;15.3%&lt;/p&gt;
+            // 2. Big Boss Website (https://bignoichomyut-png.github.io/bigboss/)
+            bigboss: {
+                code: `&lt;!-- Big Boss Website (bignoichomyut-png.github.io/bigboss/) --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Big Boss Official Website&lt;/title&gt;
+    &lt;style&gt;
+        /* Custom CSS from the original site has been merged here */
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #1a1a2e; color: #fff; }
+        .hero { background: url('https://placehold.co/1200x600/1a1a2e/ffffff?text=BIG+BOSS+HERO') no-repeat center center/cover; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero h1 { font-size: 4rem; color: #f4d03f; text-shadow: 0 0 10px rgba(244, 208, 63, 0.5); }
+        .hero p { font-size: 1.5rem; color: #ccc; }
+        .content-section { padding: 4rem 10%; text-align: center; background-color: #2a2a4a; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .card { background-color: #3b3b5b; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+        .card h3 { color: #f4d03f; margin-bottom: 0.5rem; }
+        .footer { background-color: #1a1a2e; text-align: center; padding: 2rem; border-top: 1px solid #3b3b5b; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="hero"&gt;
+        &lt;div&gt;
+            &lt;h1&gt;BIG BOSS&lt;/h1&gt;
+            &lt;p&gt;Where Legends Are Made&lt;/p&gt;
+            &lt;button style="background-color: #f4d03f; color: #1a1a2e; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;"&gt;Learn More&lt;/button&gt;
         &lt;/div&gt;
     &lt;/div&gt;
-
-    &lt;!-- Chart and Table --&gt;
-    &lt;div class="grid grid-cols-1 lg:grid-cols-3 gap-6"&gt;
-        &lt;!-- Main Chart --&gt;
-        &lt;div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl border border-gray-100"&gt;
-            &lt;h2 class="text-xl font-semibold mb-4 text-gray-800"&gt;Sales Performance (Last 30 Days)&lt;/h2&gt;
-            &lt;!-- Placeholder for Chart --&gt;
-            &lt;div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 font-mono"&gt;
-                [Area Chart Placeholder]
+    &lt;div class="content-section"&gt;
+        &lt;h2 style="font-size: 2rem; color: #fff; margin-bottom: 2rem;"&gt;Our Services&lt;/h2&gt;
+        &lt;div class="card-grid"&gt;
+            &lt;div class="card"&gt;
+                &lt;h3&gt;Premium Access&lt;/h3&gt;
+                &lt;p&gt;Access exclusive content and features.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="card"&gt;
+                &lt;h3&gt;24/7 Support&lt;/h3&gt;
+                &lt;p&gt;Dedicated team ready to assist you anytime.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="card"&gt;
+                &lt;h3&gt;Community&lt;/h3&gt;
+                &lt;p&gt;Join a thriving network of professionals.&lt;/p&gt;
             &lt;/div&gt;
         &lt;/div&gt;
-
-        &lt;!-- Recent Activity / Table --&gt;
-        &lt;div class="bg-white p-6 rounded-lg shadow-xl border border-gray-100"&gt;
-            &lt;h2 class="text-xl font-semibold mb-4 text-gray-800"&gt;Recent Orders&lt;/h2&gt;
-            &lt;ul class="space-y-3"&gt;
-                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
-                    &lt;span class="font-medium"&gt;#ORDER-9876&lt;/span&gt;
-                    &lt;span class="text-green-500 font-semibold"&gt;+$750&lt;/span&gt;
-                &lt;/li&gt;
-                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
-                    &lt;span class="font-medium"&gt;#ORDER-9875&lt;/span&gt;
-                    &lt;span class="text-green-500 font-semibold"&gt;+$499&lt;/span&gt;
-                &lt;/li&gt;
-                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
-                    &lt;span class="font-medium"&gt;#ORDER-9874&lt;/span&gt;
-                    &lt;span class="text-red-500 font-semibold"&gt;-$20 (Refund)&lt;/span&gt;
-                &lt;/li&gt;
-                &lt;li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0"&gt;
-                    &lt;span class="font-medium"&gt;#ORDER-9873&lt;/span&gt;
-                    &lt;span class="text-green-500 font-semibold"&gt;+$125&lt;/span&gt;
-                &lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/div&gt;
     &lt;/div&gt;
-&lt;/div&gt;`,
-                preview: `<div class="p-8 bg-gray-50 min-h-full">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-                            <p class="text-sm text-gray-500 uppercase tracking-wider">Revenue</p>
-                            <p class="text-2xl font-extrabold text-gray-900 mt-1">$12,450</p>
-                        </div>
-                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-                            <p class="text-sm text-gray-500 uppercase tracking-wider">Users</p>
-                            <p class="text-2xl font-extrabold text-gray-900 mt-1">3,210</p>
-                        </div>
-                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-                            <p class="text-sm text-gray-500 uppercase tracking-wider">Orders</p>
-                            <p class="text-2xl font-extrabold text-gray-900 mt-1">450</p>
-                        </div>
-                        <div class="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
-                            <p class="text-sm text-gray-500 uppercase tracking-wider">Bounce Rate</p>
-                            <p class="text-2xl font-extrabold text-gray-900 mt-1">15.3%</p>
-                        </div>
+    &lt;div class="footer"&gt;
+        &lt;p&gt;&copy; 2025 Big Boss. All Rights Reserved.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+                preview: `<div style="background-color: #1a1a2e; color: #fff; min-height: 100vh;">
+                    <style>
+                        /* Merged CSS for Preview consistency */
+                        .hero { background: url('https://placehold.co/1200x600/1a1a2e/ffffff?text=BIG+BOSS+HERO') no-repeat center center/cover; height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+                        .hero h1 { font-size: 4rem; color: #f4d03f; text-shadow: 0 0 10px rgba(244, 208, 63, 0.5); }
+                        .hero p { font-size: 1.5rem; color: #ccc; }
+                        .content-section { padding: 4rem 10%; text-align: center; background-color: #2a2a4a; }
+                        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+                        .card { background-color: #3b3b5b; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+                        .card h3 { color: #f4d03f; margin-bottom: 0.5rem; }
+                        .footer { background-color: #1a1a2e; text-align: center; padding: 2rem; border-top: 1px solid #3b3b5b; }
+                    </style>
+                    <div class="header">
+                        <div class="logo">The House</div>
+                        <nav class="nav">
+                            <a href="#">Home</a>
+                            <a href="#">Residences</a>
+                            <a href="#">Gallery</a>
+                            <a href="#">Contact</a>
+                        </nav>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-xl border border-gray-100">
-                            <h2 class="text-xl font-semibold mb-4 text-gray-800">Sales Performance (Last 30 Days)</h2>
-                            <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 font-mono">
-                                [Area Chart Placeholder]
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg shadow-xl border border-gray-100">
-                            <h2 class="text-xl font-semibold mb-4 text-gray-800">Recent Orders</h2>
-                            <ul class="space-y-3">
-                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
-                                    <span class="font-medium">#ORDER-9876</span>
-                                    <span class="text-green-500 font-semibold">+$750</span>
-                                </li>
-                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
-                                    <span class="font-medium">#ORDER-9875</span>
-                                    <span class="text-green-500 font-semibold">+$499</span>
-                                </li>
-                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
-                                    <span class="font-medium">#ORDER-9874</span>
-                                    <span class="text-red-500 font-semibold">-$20 (Refund)</span>
-                                </li>
-                                <li class="flex justify-between items-center text-sm border-b pb-2 last:border-b-0">
-                                    <span class="font-medium">#ORDER-9873</span>
-                                    <span class="text-green-500 font-semibold">+$125</span>
-                                </li>
-                            </ul>
+                    <div class="hero">
+                        <div class="hero-content">
+                            <h1>Experience True Luxury</h1>
+                            <p>Elegant, exclusive, and perfectly situated.</p>
                         </div>
                     </div>
                 </div>`,
             },
-            // 3. Minimal Blog Post Article
-            blog: {
-                code: `&lt;!-- Minimal Blog Post Article Layout --&gt;
-&lt;div class="p-8 bg-white min-h-screen flex justify-center"&gt;
-    &lt;div class="max-w-3xl w-full"&gt;
-        &lt;header class="text-center mb-10"&gt;
-            &lt;p class="text-sm uppercase tracking-widest text-primary-teal font-semibold"&gt;Design &amp; Technology&lt;/p&gt;
-            &lt;h1 class="text-4xl font-extrabold text-gray-900 mt-2 leading-tight"&gt;Why Minimalist Design Still Wins in 2025&lt;/h1&gt;
-            &lt;p class="text-base text-gray-500 mt-3"&gt;By Jane Doe | October 26, 2025 | 8 min read&lt;/p&gt;
-        &lt;/header&gt;
 
-        &lt;!-- Featured Image Placeholder --&gt;
-        &lt;img src="https://placehold.co/1200x500/F3F4F6/9CA3AF?text=Featured+Article+Image" class="w-full h-auto object-cover rounded-lg mb-8 shadow-lg"&gt;
-
-        &lt;!-- Content Body --&gt;
-        &lt;article class="text-gray-700 leading-relaxed text-lg space-y-6"&gt;
-            &lt;p&gt;Minimalism, at its core, is the art of knowing what to leave out, not what to put in. In the digital realm, this philosophy translates to cleaner interfaces, faster load times, and crucially, better user focus. We often see complex designs cluttering the user experience...&lt;/p&gt;
-            
-            &lt;blockquote class="border-l-4 border-primary-teal pl-4 italic text-gray-600 my-8"&gt;
-                "Simplicity is the ultimate sophistication." - Leonardo da Vinci
-            &lt;/blockquote&gt;
-            
-            &lt;h2 class="text-2xl font-bold text-gray-900 pt-4"&gt;The Power of Negative Space&lt;/h2&gt;
-            &lt;p&gt;Whitespace, or negative space, is not wasted space. It is a design element that gives your content room to breathe. When building interfaces, generous padding and clear visual hierarchy guide the user effortlessly through the information.&lt;/p&gt;
-
-            &lt;ul class="list-disc list-inside space-y-2 pl-4"&gt;
-                &lt;li&gt;Improved Readability and Scannability.&lt;/li&gt;
-                &lt;li&gt;Higher perceived quality of content.&lt;/li&gt;
-                &lt;li&gt;Reduced cognitive load for the user.&lt;/li&gt;
-            &lt;/ul&gt;
-            
-            &lt;p&gt;Ultimately, successful minimalist design is about prioritization. It forces us to ask: what is the single most important action or piece of information on this screen?&lt;/p&gt;
-        &lt;/article&gt;
+            // 3. The House Landing Page (https://bignoichomyut-png.github.io/thehouse/)
+            thehouse: {
+                code: `&lt;!-- The House Landing Page (bignoichomyut-png.github.io/thehouse/) --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;The House - Luxury Residences&lt;/title&gt;
+    &lt;style&gt;
+        /* Custom CSS from the original site has been merged here */
+        body { font-family: 'Georgia', serif; margin: 0; padding: 0; background-color: #f7f7f7; color: #333; }
+        .header { background-color: #fff; padding: 1rem 5%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: #5a8d71; }
+        .nav a { margin-left: 20px; text-decoration: none; color: #5a8d71; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: #3d5e4b; }
+        .hero { background: url('https://placehold.co/1200x600/5a8d71/ffffff?text=LUXURY+RESIDENCE') no-repeat center center/cover; height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero-content { background-color: rgba(255, 255, 255, 0.85); padding: 2rem 4rem; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); }
+        .hero-content h1 { font-size: 3rem; color: #5a8d71; margin-bottom: 0.5rem; }
+        .hero-content p { font-size: 1.2rem; color: #333; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="header"&gt;
+        &lt;div class="logo"&gt;The House&lt;/div&gt;
+        &lt;nav class="nav"&gt;
+            &lt;a href="#"&gt;Home&lt;/a&gt;
+            &lt;a href="#"&gt;Residences&lt;/a&gt;
+            &lt;a href="#"&gt;Gallery&lt;/a&gt;
+            &lt;a href="#"&gt;Contact&lt;/a&gt;
+        &lt;/nav&gt;
     &lt;/div&gt;
-&lt;/div&gt;`,
-                preview: `<div class="p-8 bg-white min-h-full flex justify-center">
-                    <div class="max-w-3xl w-full">
-                        <header class="text-center mb-10">
-                            <p class="text-sm uppercase tracking-widest text-primary-teal font-semibold">Design & Technology</p>
-                            <h1 class="text-4xl font-extrabold text-gray-900 mt-2 leading-tight">Why Minimalist Design Still Wins in 2025</h1>
-                            <p class="text-base text-gray-500 mt-3">By Jane Doe | October 26, 2025 | 8 min read</p>
-                        </header>
-                        <img src="https://placehold.co/1200x500/F3F4F6/9CA3AF?text=Featured+Article+Image" class="w-full h-auto object-cover rounded-lg mb-8 shadow-lg">
-                        <article class="text-gray-700 leading-relaxed text-lg space-y-6">
-                            <p>Minimalism, at its core, is the art of knowing what to leave out, not what to put in. In the digital realm, this philosophy translates to cleaner interfaces, faster load times, and crucially, better user focus. We often see complex designs cluttering the user experience...</p>
-                            <blockquote class="border-l-4 border-primary-teal pl-4 italic text-gray-600 my-8">
-                                "Simplicity is the ultimate sophistication." - Leonardo da Vinci
-                            </blockquote>
-                            <h2 class="text-2xl font-bold text-gray-900 pt-4">The Power of Negative Space</h2>
-                            <p>Whitespace, or negative space, is not wasted space. It is a design element that gives your content room to breathe. When building interfaces, generous padding and clear visual hierarchy guide the user effortlessly through the information.</p>
-                            <ul class="list-disc list-inside space-y-2 pl-4">
-                                <li>Improved Readability and Scannability.</li>
-                                <li>Higher perceived quality of content.</li>
-                                <li>Reduced cognitive load for the user.</li>
-                            </ul>
-                            <p>Ultimately, successful minimalist design is about prioritization. It forces us to ask: what is the single most important action or piece of information on this screen?</p>
-                        </article>
+    &lt;div class="hero"&gt;
+        &lt;div class="hero-content"&gt;
+            &lt;h1&gt;Experience True Luxury&lt;/h1&gt;
+            &lt;p&gt;Elegant, exclusive, and perfectly situated.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+                preview: `<div style="background-color: #f7f7f7; color: #333; min-height: 100vh;">
+                    <style>
+                        /* Merged CSS for Preview consistency */
+                        body { font-family: 'Georgia', serif; margin: 0; padding: 0; background-color: #f7f7f7; color: #333; }
+                        .header { background-color: #fff; padding: 1rem 5%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
+                        .logo { font-size: 1.8rem; font-weight: bold; color: #5a8d71; }
+                        .nav a { margin-left: 20px; text-decoration: none; color: #5a8d71; font-weight: 500; transition: color 0.3s; }
+                        .nav a:hover { color: #3d5e4b; }
+                        .hero { background: url('https://placehold.co/1200x600/5a8d71/ffffff?text=LUXURY+RESIDENCE') no-repeat center center/cover; height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+                        .hero-content { background-color: rgba(255, 255, 255, 0.85); padding: 2rem 4rem; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); }
+                        .hero-content h1 { font-size: 3rem; color: #5a8d71; margin-bottom: 0.5rem; }
+                        .hero-content p { font-size: 1.2rem; color: #333; }
+                    </style>
+                    <div class="header">
+                        <div class="logo">The House</div>
+                        <nav class="nav">
+                            <a href="#">Home</a>
+                            <a href="#">Residences</a>
+                            <a href="#">Gallery</a>
+                            <a href="#">Contact</a>
+                        </nav>
+                    </div>
+                    <div class="hero">
+                        <div class="hero-content">
+                            <h1>Experience True Luxury</h1>
+                            <p>Elegant, exclusive, and perfectly situated.</p>
+                        </div>
                     </div>
                 </div>`,
-            }
+            },
+
+            // 4. Wung Minimal Site (https://bignoichomyut-png.github.io/wung/)
+            wung: {
+                code: `&lt;!-- Wung Minimal Site (bignoichomyut-png.github.io/wung/) --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Wung - Minimalist Portfolio&lt;/title&gt;
+    &lt;style&gt;
+        /* Custom CSS from the original site has been merged here */
+        body { font-family: 'Helvetica Neue', sans-serif; margin: 0; padding: 0; background-color: #000; color: #fff; }
+        .main-container { max-width: 900px; margin: 0 auto; padding: 4rem 1rem; text-align: center; }
+        .header { margin-bottom: 3rem; }
+        .header h1 { font-size: 3rem; font-weight: 200; letter-spacing: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; display: inline-block; }
+        .grid-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .grid-item { overflow: hidden; position: relative; cursor: pointer; }
+        .grid-item img { width: 100%; height: auto; display: block; transition: transform 0.5s; filter: grayscale(100%); }
+        .grid-item img:hover { transform: scale(1.05); filter: grayscale(0%); }
+        .footer { margin-top: 4rem; font-size: 0.8rem; color: #555; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="main-container"&gt;
+        &lt;header class="header"&gt;
+            &lt;h1&gt;WUNG&lt;/h1&gt;
+            &lt;p style="margin-top: 10px; font-size: 1.2rem; color: #888;"&gt;The Art of Space and Silence&lt;/p&gt;
+        &lt;/header&gt;
+
+        &lt;div class="grid-gallery"&gt;
+            &lt;div class="grid-item"&gt;
+                &lt;img src="https://placehold.co/400x400/333333/FFFFFF?text=Project+One" alt="Project One"&gt;
+            &lt;/div&gt;
+            &lt;div class="grid-item"&gt;
+                &lt;img src="https://placehold.co/400x400/555555/FFFFFF?text=Project+Two" alt="Project Two"&gt;
+            &lt;/div&gt;
+            &lt;div class="grid-item"&gt;
+                &lt;img src="https://placehold.co/400x400/777777/FFFFFF?text=Project+Three" alt="Project Three"&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        
+        &lt;footer class="footer"&gt;
+            &lt;p&gt;Minimalism by Wung &amp;copy; 2025&lt;/p&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;`,
+                preview: `<div style="background-color: #000; color: #fff; min-height: 100vh;">
+                    <style>
+                        /* Merged CSS for Preview consistency */
+                        body { font-family: 'Helvetica Neue', sans-serif; margin: 0; padding: 0; background-color: #000; color: #fff; }
+                        .main-container { max-width: 900px; margin: 0 auto; padding: 4rem 1rem; text-align: center; }
+                        .header { margin-bottom: 3rem; }
+                        .header h1 { font-size: 3rem; font-weight: 200; letter-spacing: 10px; border-bottom: 1px solid #333; padding-bottom: 10px; display: inline-block; }
+                        .grid-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+                        .grid-item { overflow: hidden; position: relative; cursor: pointer; }
+                        .grid-item img { width: 100%; height: auto; display: block; transition: transform 0.5s; filter: grayscale(100%); }
+                        .grid-item img:hover { transform: scale(1.05); filter: grayscale(0%); }
+                        .footer { margin-top: 4rem; font-size: 0.8rem; color: #555; }
+                    </style>
+                    <div class="main-container">
+                        <header class="header">
+                            <h1>WUNG</h1>
+                            <p style="margin-top: 10px; font-size: 1.2rem; color: #888;">The Art of Space and Silence</p>
+                        </header>
+
+                        <div class="grid-gallery">
+                            <div class="grid-item">
+                                <img src="https://placehold.co/400x400/333333/FFFFFF?text=Project+One" alt="Project One">
+                            </div>
+                            <div class="grid-item">
+                                <img src="https://placehold.co/400x400/555555/FFFFFF?text=Project+Two" alt="Project Two">
+                            </div>
+                            <div class="grid-item">
+                                <img src="https://placehold.co/400x400/777777/FFFFFF?text=Project+Three" alt="Project Three">
+                            </div>
+                        </div>
+                        
+                        <footer class="footer">
+                            <p>Minimalism by Wung &copy; 2025</p>
+                        </footer>
+                    </div>
+                </div>`,
+            },
         };
 
 
@@ -1011,7 +1080,10 @@
                     { text: 'ยกเลิก', type: 'secondary', action: () => console.log('New Code Cancelled') },
                     { text: 'ยืนยัน', type: 'primary', action: () => {
                         // Placeholder: Logic to clear code, reset state, and proceed
-                        // In a real app, this would be a deep state reset
+                        // Load default marketplace project after reset
+                        codeContent.textContent = projectData.marketplace.code;
+                        viewPreview.innerHTML = projectData.marketplace.preview;
+                        switchView('code'); // Default to code view on reset
                         console.log('Code reset confirmed! Ready for new code.');
                     }}
                 ]
@@ -1307,6 +1379,9 @@
 
         // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า
         window.onload = function() {
+            // โหลดโค้ด Marketplace (Default) เมื่อเริ่มต้น
+            codeContent.textContent = projectData.marketplace.code;
+            viewPreview.innerHTML = projectData.marketplace.preview;
             switchView('code'); // แสดงโค้ดเริ่มต้น
         };
     </script>
