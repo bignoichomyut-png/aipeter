@@ -7,11 +7,15 @@
     <!-- โหลด Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* กำหนดฟอนต์หลักเป็น Inter (ทันสมัยและอ่านง่าย) */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* [FIXED]: เปลี่ยนฟอนต์หลักเป็น LINE Seed Sans TH */
+        /* กรุณาเพิ่มโค้ดอิมพอร์ตฟอนต์ LINE Seed Sans TH ที่นี่ */
+        /* ตัวอย่าง: @import url('URL_สำหรับ_LINE_Seed_Sans_TH'); */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fb;
+            font-family: 'LINE Seed Sans TH', sans-serif;
+            /* ปรับพื้นหลังให้ดูนุ่มนวลขึ้นตามภาพตัวอย่าง */
+            background-color: #f0f2f5; 
+            /* Fix: Ensure body doesn't cause extra scroll */
+            overflow: hidden;
         }
 
         /* กำหนดสีหลักสำหรับ Tailwind Custom Colors */
@@ -19,22 +23,13 @@
         .bg-primary-teal { background-color: #37B2B5; }
         .hover\:bg-dark-teal:hover { background-color: #2A9B9E; }
         .hover\:text-primary-teal:hover { color: #37B2B5; }
+        .bg-light-teal { background-color: #E0F7F7; }
 
-        /* Style สำหรับแถบแบ่งที่สามารถลากเพื่อยืดหดได้ */
-        .resizer {
-            width: 8px;
-            cursor: col-resize;
-            transition: background-color 0.2s;
-            z-index: 10;
+        /* FIX: Main container height calculation to prevent overflow caused by m-8 (32px top + 32px bottom = 64px or 4rem) */
+        .main-card {
+            height: calc(100vh - 4rem);
         }
-        .resizer:hover {
-            background-color: #37B2B5; /* ใช้สีหลักเมื่อชี้ */
-        }
-        /* Style สำหรับแถบแบ่งระหว่าง Layout 2 (Chat) และ Layout 3 (Code) */
-        .divider-v {
-            width: 1px;
-            background-color: #e5e7eb;
-        }
+
         /* Custom scrollbar for better aesthetics */
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
@@ -46,118 +41,406 @@
         .custom-scroll::-webkit-scrollbar-track {
             background-color: transparent;
         }
+        
+        /* Custom Flex Class: L3 will be twice as wide as L2 (2:1 ratio of remaining space) */
+        .flex-2 {
+            flex: 2 1 0%;
+        }
+
+        /* สไตล์ไอคอนเมนู */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            transition: all 0.15s;
+        }
+        .menu-item:hover {
+            background-color: #f7f9fb; /* พื้นหลังสีขาวนวลเมื่อโฮเวอร์ */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        /* สไตล์สำหรับเมนูที่ Active */
+        .menu-item.active {
+            background-color: white; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+        }
+
+        /* --- CSS สำหรับเอฟเฟกต์ไฟนีออนรอบไอคอนเมนู --- */
+        .icon-glow-wrapper {
+            position: relative;
+            padding: 4px; 
+            border-radius: 50%;
+            transition: box-shadow 0.3s ease-in-out, transform 0.15s;
+            line-height: 0;
+        }
+
+        .menu-item:hover .icon-glow-wrapper,
+        .menu-item.active .icon-glow-wrapper {
+            /* เอฟเฟกต์ Neon Glow สี Teal (#37B2B5) */
+            box-shadow: 0 0 8px rgba(55, 178, 181, 0.7),
+                        0 0 15px rgba(55, 178, 181, 0.4),
+                        0 0 25px rgba(55, 178, 181, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* --- Custom Tech Input Glow Focus --- */
+        .tech-input:focus {
+            outline: none;
+            border-color: #37B2B5; 
+            /* เอฟเฟกต์ Neon Glow Ring */
+            box-shadow: 0 0 0 3px rgba(55, 178, 181, 0.5); 
+        }
+
+        /* Container สำหรับ Textarea และปุ่มส่ง (เพื่อให้ปุ่มอยู่ด้านใน) */
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* [FIX]: Textarea ที่ต้องเว้นพื้นที่สำหรับปุ่มส่ง (ปรับเป็น 4rem) */
+        .input-container textarea {
+            padding-right: 4rem; 
+        }
+
+        /* ปุ่มส่งที่ลอยอยู่ด้านใน Textarea: ปรับให้จัดกึ่งกลางแนวตั้งและกลม */
+        .send-button-inside {
+            position: absolute;
+            /* [FIX]: ปรับตำแหน่งด้านขวาเพื่อความสมดุล */
+            right: 0.75rem; 
+            /* [Centering Logic] ใช้ top: 50% และ transform: translateY(-50%) เพื่อจัดกึ่งกลางแนวตั้ง */
+            top: 50%;
+            transform: translateY(-50%);
+            /* [FIX]: ลดขนาดปุ่มลง 30% (จาก 2.5rem เป็น 1.75rem) */
+            height: 1.75rem; 
+            width: 1.75rem; 
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* เอฟเฟกต์ Neon Glow เมื่อคลิก/แตะ (Active state) */
+        .send-button-inside:active {
+            /* เพิ่ม Neon Glow Effect */
+            box-shadow: 0 0 10px rgba(83, 212, 214, 0.9),
+                        0 0 20px rgba(55, 178, 181, 0.6);
+            transform: translateY(-50%) scale(0.95); /* ย่อลงเล็กน้อยเมื่อกด */
+        }
+
     </style>
 </head>
 <body class="overflow-hidden">
 
-    <!-- คอนเทนเนอร์หลัก: กำหนดให้เต็มหน้าจอและจัดเรียงเป็นแถวแนวนอน -->
-    <div class="flex h-screen bg-gray-50 text-gray-800">
+    <!-- คอนเทนเนอร์หลัก: ปรับเป็น card ลอยตัว (rounded-xl, shadow-2xl) และใช้ bg-white ที่ด้านใน -->
+    <!-- FIX: เปลี่ยน h-screen เป็น main-card เพื่อคำนวณความสูงให้พอดีกับ m-8 margin -->
+    <div class="flex bg-white text-gray-800 m-8 rounded-2xl shadow-2xl overflow-hidden main-card">
 
-        <!-- Layout 1: แถบเครื่องมือ/เมนู (เริ่มต้นที่ 80px สำหรับโหมดไอคอนเท่านั้น) -->
-        <div id="sidebar" class="flex-shrink-0 bg-white border-r border-gray-200 shadow-lg" style="width: 80px;">
-            <!-- Header: แสดงแค่ 'AI' ในโหมดไอคอน -->
-            <div class="p-4 border-b border-gray-200 h-16 flex items-center justify-center">
-                <h1 class="text-xl font-bold text-primary-teal">AI</h1>
+        <!-- Layout 1: แถบเครื่องมือ/เมนู (Fixed 80px - เท่ากับขนาดไอคอน) -->
+        <div id="sidebar" class="flex-shrink-0 bg-white border-r border-gray-200 w-[80px] rounded-l-2xl">
+            <!-- Header: แสดงแค่ 'AI' ในโหมดไอคอน (h-20) -->
+            <div class="p-4 border-b border-gray-200 h-20 flex items-center justify-center">
+                <h1 class="text-3xl font-bold text-gray-800">AI</h1>
             </div>
-            <nav class="p-2 space-y-2">
-                <!-- 1. สร้างโค้ดใหม่ (Active) -->
-                <a href="#" title="สร้างโค้ดใหม่" class="flex items-center justify-center p-3 text-sm font-medium text-white bg-primary-teal rounded-lg shadow-md transition duration-150 hover:bg-dark-teal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            <nav class="p-2 space-y-4">
+                <!-- 1. สร้างโค้ดใหม่ (New Code - Happy Document) -->
+                <!-- ADDED ID for JS targeting -->
+                <a href="#" title="สร้างโค้ดใหม่" class="menu-item active" id="new-code-button">
+                    <div class="icon-glow-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                            <rect x="10" y="8" width="28" height="32" rx="4" fill="#E0F7F7" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M18 20c0 4 3 7 7 7s7-3 7-7" fill="none" stroke="#37B2B5" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="21" cy="18" r="1.5" fill="#37B2B5"/>
+                            <circle cx="29" cy="18" r="1.5" fill="#37B2B5"/>
+                            <path d="M18 35h12" stroke="#37B2B5" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
                 </a>
-                <!-- 2. ประวัติโครงการ -->
-                <a href="#" title="ประวัติโครงการ" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4v8l8 4 8-4V7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11V3"></path></svg>
-                </a>
-                <!-- 3. การตั้งค่า AI -->
-                <a href="#" title="การตั้งค่า AI" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </a>
-                <!-- 4. เทมเพลตดีไซน์ -->
-                <a href="#" title="เทมเพลตดีไซน์" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                </a>
-                <!-- 5. คู่มือการใช้งาน -->
-                <a href="#" title="คู่มือการใช้งาน" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v.005m-4.237-.771L9.16 7.682m4.237-.771l2.483 1.398M18 10a8 8 0 11-16 0 8 8 0 0116 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14h4v-2h-4v2z"></path></svg>
-                </a>
-                <!-- 6. ออกจากระบบ -->
-                <a href="#" title="ออกจากระบบ" class="flex items-center justify-center p-3 text-sm font-medium text-gray-600 rounded-lg transition duration-150 hover:bg-gray-100 hover:text-primary-teal">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-3"></path></svg>
+                
+                <!-- 2. ประวัติโครงการ (Toggle Container) -->
+                <div class="relative">
+                    <a href="#" title="ประวัติโครงการ" class="menu-item" id="project-history-button">
+                        <div class="icon-glow-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                                <path d="M10 40h28V15c0-2-1-4-3-4h-4v-4h-4v4h-4v-4h-4v4h-4c-2 0-3 2-3 4v25z" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
+                                <rect x="15" y="24" width="4" height="16" fill="#37B2B5"/>
+                                <rect x="29" y="24" width="4" height="16" fill="#37B2B5"/>
+                            </svg>
+                        </div>
+                    </a>
+                    
+                    <!-- Sub-menu container for Project History -->
+                    <div id="project-history-submenu" class="absolute left-[80px] top-0 z-20 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 border-b border-gray-100 px-2 uppercase tracking-wider">เมนูประวัติโครงการ</div>
+                        
+                        <!-- 2a. เมนูย่อย 1: ฉบับร่าง (Drafts) -->
+                        <a href="#" title="ฉบับร่าง" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-gray-500">
+                                <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"></path>
+                            </svg>
+                            <span class="text-sm">ฉบับร่าง (Drafts)</span>
+                        </a>
+                        
+                        <!-- 2b. เมนูย่อย 2: โครงการที่เสร็จสมบูรณ์ (Final Projects) -->
+                        <a href="#" title="โครงการที่เสร็จสมบูรณ์" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-primary-teal">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                                <path d="M22 4L12 14.01l-3-3"></path>
+                            </svg>
+                            <span class="text-sm">เสร็จสมบูรณ์ (Final)</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. การตั้งค่า AI (Toggle Container) -->
+                <div class="relative">
+                    <a href="#" title="การตั้งค่า AI" class="menu-item" id="ai-settings-button">
+                        <div class="icon-glow-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                                <circle cx="24" cy="24" r="14" fill="#EBF4FF" stroke="#5d9ee7" stroke-width="2"/>
+                                <circle cx="24" cy="24" r="7" fill="#5d9ee7"/>
+                                <path d="M24 4V10M38 12L34 16M44 24H38M38 36L34 32M24 44V38M10 36L14 32M4 24H10M10 12L14 16" stroke="#5d9ee7" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <!-- Sub-menu container for AI Settings -->
+                    <div id="ai-settings-submenu" class="absolute left-[80px] top-0 z-20 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 border-b border-gray-100 px-2 uppercase tracking-wider">เครื่องมือผู้ช่วย</div>
+                        
+                        <!-- 3a. สี (Color) -->
+                        <a href="#" title="สี" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-3 text-pink-500">
+                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-sm">สี (Color)</span>
+                        </a>
+                        
+                        <!-- 3b. สไตล์เว็บ (Web Style) -->
+                        <a href="#" title="สไตล์เว็บ" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-blue-500">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span class="text-sm">สไตล์เว็บ (Web Style)</span>
+                        </a>
+                        
+                        <!-- 3c. เอฟเฟค (Effect) -->
+                        <a href="#" title="เอฟเฟค" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-3 text-yellow-500">
+                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.234.98-.705 1.767-1.536 1.284l-4.733-2.887-4.733 2.887c-.831.483-1.77-.297-1.536-1.284l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-sm">เอฟเฟค (Effect)</span>
+                        </a>
+
+                        <!-- 3d. ไอคอน (Icon) -->
+                        <a href="#" title="ไอคอน" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-red-500">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="9" y1="3" x2="9" y2="21"></line>
+                                <line x1="15" y1="3" x2="15" y2="21"></line>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="3" y1="15" x2="21" y2="15"></line>
+                            </svg>
+                            <span class="text-sm">ไอคอน (Icon)</span>
+                        </a>
+
+                        <!-- 3e. ฟ้อน (Font) -->
+                        <a href="#" title="ฟ้อน" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-green-500">
+                                <path d="M4 7V4h16v3M9 20h6M12 4v16"></path>
+                            </svg>
+                            <span class="text-sm">ฟ้อน (Font)</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 4. เทมเพลตดีไซน์ (Toggle Container) - ADDED NEW MENU -->
+                <div class="relative">
+                    <a href="#" title="เทมเพลตดีไซน์" class="menu-item" id="design-templates-button">
+                        <div class="icon-glow-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                                <circle cx="24" cy="24" r="18" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2"/>
+                                <path d="M24 16c2 0 4 1 4 3 0 2-1 3-2 4s-2 2-2 4M24 33h.01" stroke="#37B2B5" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <!-- NEW: Sub-menu container for Design Templates -->
+                    <div id="design-templates-submenu" class="absolute left-[80px] top-0 z-20 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 w-64 space-y-1 hidden">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 border-b border-gray-100 px-2 uppercase tracking-wider">ตัวอย่างดีไซน์เทมเพลต</div>
+                        
+                        <!-- 4a. หน้าสินค้าอีคอมเมิร์ซ (E-commerce Product Page) -->
+                        <a href="#" title="หน้าสินค้าอีคอมเมิร์ซ" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-red-500">
+                                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"></path>
+                            </svg>
+                            <span class="text-sm">E-commerce Product Page</span>
+                        </a>
+                        
+                        <!-- 4b. เลย์เอาต์บทความบล็อก (Blog Post Layout) -->
+                        <a href="#" title="เลย์เอาต์บทความบล็อก" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-blue-500">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <span class="text-sm">Blog Post Layout</span>
+                        </a>
+
+                        <!-- 4c. แดชบอร์ดสมัยใหม่ (Modern Dashboard) -->
+                        <a href="#" title="แดชบอร์ดสมัยใหม่" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-green-500">
+                                <rect x="3" y="3" width="7" height="9"></rect>
+                                <rect x="14" y="3" width="7" height="5"></rect>
+                                <rect x="14" y="12" width="7" height="9"></rect>
+                                <rect x="3" y="16" width="7" height="5"></rect>
+                            </svg>
+                            <span class="text-sm">Modern Dashboard</span>
+                        </a>
+
+                        <!-- 4d. หน้าแรกแบบมินิมอล (Landing Page Minimal) -->
+                        <a href="#" title="หน้าแรกแบบมินิมอล" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-yellow-600">
+                                <path d="M3 3h18v18H3V3zm12 3H9v12h6V6z"></path>
+                            </svg>
+                            <span class="text-sm">Landing Page (Minimal)</span>
+                        </a>
+
+                        <!-- 4e. ตารางจัดแสดงผลงาน (Portfolio Grid) -->
+                        <a href="#" title="ตารางจัดแสดงผลงาน" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-purple-500">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            <span class="text-sm">Portfolio Grid</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 5. คู่มือการใช้งาน (Toggle Container) -->
+                <div class="relative">
+                    <a href="#" title="คู่มือการใช้งาน" class="menu-item" id="user-manual-button">
+                        <div class="icon-glow-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                                <path d="M24 4c-5 0-9 4-9 9 0 4 3 7 3 9v7h12v-7c0-2 3-5 3-9 0-5-4-9-9-9z" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
+                                <rect x="20" y="32" width="8" height="6" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
+                                <rect x="21" y="38" width="6" height="4" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <!-- NEW: Sub-menu container for User Manual -->
+                    <div id="user-manual-submenu" class="absolute left-[80px] top-0 z-20 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 border-b border-gray-100 px-2 uppercase tracking-wider">คู่มือการใช้งาน</div>
+                        
+                        <!-- 5a. เมนูย่อย 1: คู่มือเริ่มต้นการใช้งาน -->
+                        <a href="#" title="คู่มือเริ่มต้นการใช้งาน" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-3 text-yellow-600">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                            </svg>
+                            <span class="text-sm">คู่มือเริ่มต้นการใช้งาน</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 6. ออกจากระบบ (Logout - Hand/Palm) -->
+                <!-- ADDED ID for JS targeting -->
+                <a href="#" title="ออกจากระบบ" class="menu-item" id="logout-button">
+                    <div class="icon-glow-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                            <path d="M24 42c-7 0-11-4-11-10s4-10 11-10 11 4 11 10-4 10-11 10z" fill="#FBE0C4" stroke="#F7A823" stroke-width="2"/>
+                            <path d="M24 12v-8m-7 8l-3-5m14 5l3-5" stroke="#F7A823" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M34 26c-2 2-5 3-8 3s-6-1-8-3" fill="none" stroke="#F7A823" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M24 32c-3 0-5-2-5-5s2-5 5-5 5 2 5 5-2 5-5 5z" fill="#FDE0C4" stroke="#F7A823" stroke-width="2"/>
+                        </svg>
+                    </div>
                 </a>
             </nav>
         </div>
-
-        <!-- ตัวแบ่ง Layout 1 (Sidebar) และ Layout 2 (Chat) ที่สามารถลากได้ -->
-        <div id="resizer" class="resizer bg-gray-100 hover:bg-primary-teal"></div>
-
+        
         <!-- คอนเทนเนอร์สำหรับ Layout 2 (Chat) และ Layout 3 (Code/Preview) -->
         <div class="flex flex-1 min-w-0">
 
-            <!-- Layout 2: ช่องแชทสำหรับใส่คำสั่ง AI (Chat Interface) - ใช้ flex-1 เพื่อแบ่งพื้นที่เท่ากับ Layout 3 (50%) -->
-            <div id="chat-panel" class="flex flex-col flex-1 bg-white custom-scroll overflow-y-auto min-w-0">
-                <header class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10 shadow-sm">
-                    <h2 class="text-lg font-semibold text-gray-800">1. ช่องสั่งงาน AI</h2>
+            <!-- Layout 2: ช่องแชทสำหรับใส่คำสั่ง AI (1 ส่วนของพื้นที่ที่เหลือ) -->
+            <div id="chat-panel" class="flex flex-col flex-1 bg-white border-r border-gray-200 custom-scroll overflow-y-auto min-w-0">
+                <!-- Header (h-20) -->
+                <header class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10 shadow-sm h-20 flex flex-col justify-center">
+                    <h2 class="text-lg font-semibold text-gray-800">ช่องสั่งงาน AI</h2>
                     <p class="text-sm text-gray-500">พิมพ์คำสั่งของคุณเพื่อสร้างโค้ดหรือดีไซน์</p>
                 </header>
 
                 <!-- ส่วนแสดงประวัติการสนทนา (จำลอง) -->
                 <div class="flex-1 p-6 space-y-4 custom-scroll overflow-y-auto">
-                    <!-- ข้อความต้อนรับ AI -->
+                    <!-- ข้อความต้อนรับ AI: ปรับโค้งมนและ max-width -->
                     <div class="flex justify-start">
-                        <div class="max-w-xs md:max-w-md p-4 bg-[#E0F7F7] text-[#1A7B7E] rounded-xl rounded-tl-sm shadow-md">
+                        <div class="max-w-sm md:max-w-lg p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-md">
                             <p class="font-bold">AI Helper</p>
                             <p class="text-sm">สวัสดีครับ! คุณต้องการให้ผมช่วยสร้างโค้ด (HTML/React/อื่นๆ) หรือดีไซน์กราฟิกอะไรบ้างครับ?</p>
                         </div>
                     </div>
-                    <!-- ข้อความจำลองจากผู้ใช้ -->
+                    <!-- ข้อความจำลองจากผู้ใช้: ปรับโค้งมนและ max-width -->
                     <div class="flex justify-end">
-                        <div class="max-w-xs md:max-w-md p-4 bg-primary-teal text-white rounded-xl rounded-br-sm shadow-md">
+                        <div class="max-w-sm md:max-w-lg p-4 bg-primary-teal text-white rounded-3xl rounded-br-lg shadow-xl">
                             <p class="text-sm">สร้างโค้ด HTML/Tailwind สำหรับ "หน้าลงทะเบียน" ที่มีปุ่มสีเขียวและใช้ฟอนต์ Inter</p>
                         </div>
                     </div>
-                    <!-- การตอบกลับโค้ดจำลองจาก AI -->
+                    <!-- การตอบกลับโค้ดจำลองจาก AI: ปรับโค้งมนและ max-width -->
                     <div class="flex justify-start">
-                        <div class="max-w-xs md:max-w-md p-4 bg-[#E0F7F7] text-[#1A7B7E] rounded-xl rounded-tl-sm shadow-md">
+                        <div class="max-w-sm md:max-w-lg p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-md">
                             <p class="font-bold">AI Helper</p>
-                            <p class="text-sm">รับทราบครับ! โค้ด HTML/Tailwind สำหรับหน้าลงทะเบียนถูกสร้างและแสดงในช่อง **3. แสดงผลโค้ด** แล้ว ลองสลับไปที่แท็บ **แสดงดีไซน์ (Preview)** เพื่อดูผลลัพธ์ได้เลยครับ</p>
+                            <p class="text-sm">รับทราบครับ! โค้ด HTML/Tailwind สำหรับหน้าลงทะเบียนถูกสร้างและแสดงในช่อง **แสดงผลลัพธ์** แล้ว ลองสลับไปที่แท็บ **แสดงดีไซน์ (Preview)** เพื่อดูผลลัพธ์ได้เลยครับ</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- ช่องสำหรับป้อนคำสั่งใหม่ (Tech Card Style) -->
-                <footer class="p-4 border-t border-gray-200 bg-white sticky bottom-0 shadow-lg">
-                    <div class="flex items-center space-x-3">
-                        <!-- Textarea: Clean input area -->
-                        <textarea id="prompt-input" rows="2" class="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-teal focus:border-primary-teal transition duration-150 resize-none" placeholder="พิมพ์คำสั่งเพื่อสร้างโค้ด..."></textarea>
-                        <!-- Send Button: Gradient style -->
-                        <button class="px-6 py-2.5 bg-gradient-to-r from-[#53D4D6] to-[#37B2B5] text-white font-semibold rounded-lg shadow-lg hover:from-[#37B2B5] hover:to-[#2A9B9E] transition duration-300 transform hover:scale-[1.02]">
-                            ส่ง
+                <footer class="p-4 border-t border-gray-200 bg-white shadow-lg">
+                    <!-- FIX: ลบ flex items-center space-x-3 ออก และใช้ input-container แทน -->
+                    <div class="input-container">
+                        <!-- Textarea: ใช้ tech-input สำหรับเอฟเฟกต์ Glow Focus และเว้น padding-right -->
+                        <textarea id="prompt-input" rows="2" class="w-full p-3 border-2 border-gray-300 rounded-lg transition duration-150 resize-none shadow-inner tech-input" placeholder="พิมพ์คำสั่งเพื่อสร้างโค้ด..."></textarea>
+                        
+                        <!-- Send Button: ลอยอยู่ด้านใน Textarea, ปรับให้เป็น rounded-full -->
+                        <button id="send-button" class="send-button-inside flex items-center justify-center bg-gradient-to-r from-[#53D4D6] to-[#37B2B5] text-white font-semibold rounded-full shadow-lg hover:from-[#37B2B5] hover:to-[#2A9B9E] transition duration-300 transform hover:scale-[1.05]">
+                            <!-- [FIX]: ลดขนาดไอคอน SVG ภายในปุ่มลงให้สมส่วน (จาก w-6 h-6 เป็น w-4 h-4) -->
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
                     </div>
                 </footer>
             </div>
 
-            <!-- ตัวแบ่ง Layout 2 (Chat) และ Layout 3 (Code) -->
-            <div class="divider-v"></div>
-
-            <!-- Layout 3: แสดงผลโค้ด/ดีไซน์ (Code Output/Preview) - ใช้ flex-1 เพื่อแบ่งพื้นที่เท่ากับ Layout 2 (50%) -->
-            <div id="output-panel" class="flex flex-col flex-1 bg-gray-900 min-w-0">
-                <header class="p-4 bg-gray-800 border-b border-gray-700 flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-white">3. แสดงผลลัพธ์</h2>
-                    <!-- Tabs สำหรับสลับ Code/Design -->
-                    <div class="flex space-x-2">
-                        <button id="tab-code" class="px-4 py-1.5 text-sm font-medium rounded-full bg-primary-teal text-white shadow-lg transition duration-150 hover:bg-dark-teal">
-                            โค้ดที่สร้าง (HTML)
+            <!-- Layout 3: แสดงผลโค้ด/ดีไซน์ (2 ส่วนของพื้นที่ที่เหลือ - กว้างกว่า L2 สองเท่า) -->
+            <div id="output-panel" class="flex flex-col flex-2 bg-gray-900 min-w-0 rounded-r-2xl overflow-hidden">
+                <!-- Header (h-20) -->
+                <header class="p-4 bg-gray-800 border-b border-gray-700 flex items-center justify-between h-20 rounded-tr-2xl">
+                    <h2 class="text-lg font-semibold text-white">แสดงผลลัพธ์</h2>
+                    <!-- Controls (Copy Button & Tabs) -->
+                    <div class="flex items-center space-x-3">
+                        <!-- NEW: Copy Button -->
+                        <button id="copy-button" title="คัดลอกโค้ด" class="flex items-center justify-center p-2 text-sm font-medium rounded-full bg-gray-700 text-gray-300 transition duration-150 hover:bg-primary-teal hover:text-white transform hover:scale-105">
+                            <svg id="copy-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Clipboard Icon -->
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
+                            </svg>
                         </button>
-                        <button id="tab-preview" class="px-4 py-1.5 text-sm font-medium rounded-full bg-gray-700 text-gray-300 transition duration-150 hover:bg-gray-600 hover:text-white">
-                            แสดงดีไซน์ (Preview)
-                        </button>
+                        <!-- Tabs -->
+                        <div class="flex space-x-2">
+                            <button id="tab-code" class="px-4 py-1.5 text-sm font-medium rounded-full bg-primary-teal text-white shadow-lg transition duration-150 hover:bg-dark-teal">
+                                โค้ดที่สร้าง (HTML)
+                            </button>
+                            <button id="tab-preview" class="px-4 py-1.5 text-sm font-medium rounded-full bg-gray-700 text-gray-300 transition duration-150 hover:bg-gray-600 hover:text-white">
+                                แสดงดีไซน์ (Preview)
+                            </button>
+                        </div>
                     </div>
                 </header>
 
                 <!-- ส่วนแสดงโค้ด (เริ่มต้น) -->
                 <div id="view-code" class="flex-1 p-4 overflow-y-auto custom-scroll text-sm text-green-300 bg-gray-900 font-mono">
-                    <pre><code>&lt;!-- โค้ดที่สร้างโดย AI จะปรากฏที่นี่ --&gt;
+                    <pre>
+                        <!-- ADDED ID for JS targeting -->
+                        <code id="code-content">&lt;!-- โค้ดที่สร้างโดย AI จะปรากฏที่นี่ --&gt;
 &lt;div class="flex items-center justify-center min-h-screen bg-gray-100"&gt;
   &lt;div class="p-8 bg-white rounded-xl shadow-2xl w-full max-w-md"&gt;
     &lt;h2 class="text-2xl font-bold mb-6 text-center text-gray-800"&gt;ลงทะเบียนใหม่&lt;/h2&gt;
@@ -203,53 +486,232 @@
             </div>
 
         </div>
+
+    </div>
+
+    <!-- Custom Modal Overlay (Hidden by default) -->
+    <div id="custom-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[9999] hidden flex items-center justify-center p-4">
+        <div id="custom-modal" class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm transform transition duration-300 scale-100">
+            <h3 id="modal-title" class="text-xl font-bold mb-4 text-gray-800"></h3>
+            <p id="modal-message" class="text-gray-600 mb-6"></p>
+            <div id="modal-actions" class="flex justify-end space-x-3">
+                <!-- Buttons will be populated by JS -->
+            </div>
+        </div>
     </div>
 
     <script>
         const sidebar = document.getElementById('sidebar');
-        const resizer = document.getElementById('resizer');
-        const chatPanel = document.getElementById('chat-panel');
-        const outputPanel = document.getElementById('output-panel');
-
         const tabCode = document.getElementById('tab-code');
         const tabPreview = document.getElementById('tab-preview');
         const viewCode = document.getElementById('view-code');
         const viewPreview = document.getElementById('view-preview');
+        const outputPanel = document.getElementById('output-panel');
+        
+        // CONSTANTS FOR LAYOUT 3
+        const copyButton = document.getElementById('copy-button');
+        const codeContent = document.getElementById('code-content');
 
-        let isResizing = false;
+        // LAYOUT 1 SUB-MENUS
+        const projectHistoryButton = document.getElementById('project-history-button');
+        const projectHistorySubmenu = document.getElementById('project-history-submenu');
+        const aiSettingsButton = document.getElementById('ai-settings-button');
+        const aiSettingsSubmenu = document.getElementById('ai-settings-submenu');
+        const userManualButton = document.getElementById('user-manual-button'); 
+        const userManualSubmenu = document.getElementById('user-manual-submenu'); 
+        const designTemplatesButton = document.getElementById('design-templates-button');
+        const designTemplatesSubmenu = document.getElementById('design-templates-submenu');
 
-        // --- JavaScript สำหรับการปรับขนาด Sidebar (Layout 1) ---
+        // NEW CONSTANTS FOR MODAL
+        const newCodeButton = document.getElementById('new-code-button');
+        const logoutButton = document.getElementById('logout-button');
+        const modalOverlay = document.getElementById('custom-modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalActions = document.getElementById('modal-actions');
 
-        resizer.addEventListener('mousedown', function(e) {
-            isResizing = true;
-            document.body.style.userSelect = 'none';
-            document.body.style.cursor = 'col-resize';
-        });
+        // --- MODAL FUNCTIONS ---
 
-        document.addEventListener('mousemove', function(e) {
-            if (!isResizing) return;
+        function closeModal() {
+            modalOverlay.classList.add('hidden');
+            modalActions.innerHTML = ''; // Clear buttons
+        }
 
-            // จำกัดขนาดขั้นต่ำและสูงสุดของ Sidebar (Layout 1)
-            // ขั้นต่ำ 80px สำหรับโหมดไอคอน, ขั้นสูงสุด 250px เพื่อเปิดให้แสดงข้อความได้บ้าง
-            const minWidth = 80; 
-            const maxWidth = 250; 
-            const newWidth = e.clientX;
+        function showModal(title, message, buttons) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalActions.innerHTML = ''; // Clear previous buttons
 
-            if (newWidth >= minWidth && newWidth <= maxWidth) {
-                sidebar.style.width = newWidth + 'px';
+            buttons.forEach(button => {
+                const btn = document.createElement('button');
+                btn.textContent = button.text;
+                btn.className = 'px-4 py-2 rounded-lg text-sm font-semibold transition duration-150 shadow-md';
+                
+                // Add specific Tailwind classes for styling (primary/secondary)
+                if (button.type === 'primary') {
+                     btn.classList.add('bg-primary-teal', 'text-white', 'hover:bg-dark-teal');
+                } else if (button.type === 'secondary') {
+                     btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                } else if (button.type === 'danger') {
+                     btn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600');
+                }
+
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    closeModal();
+                    if (button.action) {
+                        button.action();
+                    }
+                };
+                modalActions.appendChild(btn);
+            });
+
+            modalOverlay.classList.remove('hidden');
+        }
+
+        // --- BUTTON HANDLERS FOR MODAL ---
+
+        function handleNewCodeClick(event) {
+            event.preventDefault();
+            // Close all submenus before showing modal
+            closeAllSubMenus(); 
+
+            showModal(
+                'สร้างโค้ดใหม่',
+                'คุณต้องการล้างโค้ดปัจจุบันและเริ่มต้นสร้างโค้ดใหม่หรือไม่? การดำเนินการนี้ไม่สามารถยกเลิกได้',
+                [
+                    { text: 'ยกเลิก', type: 'secondary', action: () => console.log('New Code Cancelled') },
+                    { text: 'ยืนยัน', type: 'primary', action: () => {
+                        // Placeholder: Logic to clear code, reset state, and proceed
+                        // In a real app, this would be a deep state reset
+                        console.log('Code reset confirmed! Ready for new code.');
+                    }}
+                ]
+            );
+        }
+
+        function handleLogoutClick(event) {
+            event.preventDefault();
+            // Close all submenus before showing modal
+            closeAllSubMenus(); 
+
+            showModal(
+                'ออกจากระบบ',
+                'คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?',
+                [
+                    { text: 'ยกเลิก', type: 'secondary', action: () => console.log('Logout Cancelled') },
+                    // Changed 'ตกลง' to primary type for visual weight
+                    { text: 'ตกลง', type: 'primary', action: () => {
+                        // Placeholder: Logic to handle actual logout process
+                        console.log('Logout confirmed!');
+                    }}
+                ]
+            );
+        }
+
+        // --- SUBMENU TOGGLE FUNCTIONS ---
+
+        function closeAllSubMenus() {
+            projectHistorySubmenu.classList.add('hidden');
+            projectHistoryButton.classList.remove('active');
+            aiSettingsSubmenu.classList.add('hidden');
+            aiSettingsButton.classList.remove('active');
+            userManualSubmenu.classList.add('hidden');
+            userManualButton.classList.remove('active');
+            designTemplatesSubmenu.classList.add('hidden');
+            designTemplatesButton.classList.remove('active');
+        }
+
+        // Function to handle clicking outside the sub-menu to close it
+        document.addEventListener('click', (event) => {
+            // Check if the click is outside all submenus AND their buttons
+            const isClickInsideMenuArea = projectHistoryButton.contains(event.target) || 
+                                          projectHistorySubmenu.contains(event.target) ||
+                                          aiSettingsButton.contains(event.target) ||
+                                          aiSettingsSubmenu.contains(event.target) ||
+                                          userManualButton.contains(event.target) ||
+                                          userManualSubmenu.contains(event.target) ||
+                                          designTemplatesButton.contains(event.target) ||
+                                          designTemplatesSubmenu.contains(event.target) ||
+                                          newCodeButton.contains(event.target) || // Include new code button here
+                                          logoutButton.contains(event.target); // Include logout button here
+
+            if (!isClickInsideMenuArea && !modalOverlay.contains(event.target) && !modalOverlay.classList.contains('hidden')) {
+                 // Do nothing if modal is open and click is outside modal
+            } else if (!isClickInsideMenuArea && modalOverlay.classList.contains('hidden')) {
+                // Close submenus if modal is closed and click is outside all menus
+                closeAllSubMenus();
             }
         });
 
-        document.addEventListener('mouseup', function() {
-            if (isResizing) {
-                isResizing = false;
-                document.body.style.userSelect = '';
-                document.body.style.cursor = 'default';
+        // Function to toggle project sub-menu visibility
+        function toggleProjectSubMenu(event) {
+            event.preventDefault();
+            closeModal();
+            closeAllSubMenus(); // Close all others first
+            const isHidden = projectHistorySubmenu.classList.contains('hidden');
+
+            if (isHidden) {
+                projectHistorySubmenu.classList.remove('hidden');
+                projectHistoryButton.classList.add('active'); 
+            } else {
+                projectHistorySubmenu.classList.add('hidden');
+                projectHistoryButton.classList.remove('active');
             }
-        });
+        }
 
-        // --- JavaScript สำหรับการสลับหน้า Code / Preview (Layout 3) ---
+        // Function to toggle AI Settings sub-menu visibility
+        function toggleAiSettingsSubMenu(event) {
+            event.preventDefault();
+            closeModal();
+            closeAllSubMenus(); // Close all others first
+            
+            const isHidden = aiSettingsSubmenu.classList.contains('hidden');
 
+            if (isHidden) {
+                aiSettingsSubmenu.classList.remove('hidden');
+                aiSettingsButton.classList.add('active'); 
+            } else {
+                aiSettingsSubmenu.classList.add('hidden');
+                aiSettingsButton.classList.remove('active');
+            }
+        }
+
+        // Function to toggle User Manual sub-menu visibility
+        function toggleUserManualSubMenu(event) {
+            event.preventDefault();
+            closeModal();
+            closeAllSubMenus(); // Close all others first
+            
+            const isHidden = userManualSubmenu.classList.contains('hidden');
+
+            if (isHidden) {
+                userManualSubmenu.classList.remove('hidden');
+                userManualButton.classList.add('active'); 
+            } else {
+                userManualSubmenu.classList.add('hidden');
+                userManualButton.classList.remove('active');
+            }
+        }
+
+        // Function to toggle Design Templates sub-menu visibility
+        function toggleDesignTemplatesSubMenu(event) {
+            event.preventDefault();
+            closeModal();
+            closeAllSubMenus(); // Close all others first
+            
+            const isHidden = designTemplatesSubmenu.classList.contains('hidden');
+
+            if (isHidden) {
+                designTemplatesSubmenu.classList.remove('hidden');
+                designTemplatesButton.classList.add('active');
+            } else {
+                designTemplatesSubmenu.classList.add('hidden');
+                designTemplatesButton.classList.remove('active');
+            }
+        }
+
+        // ฟังก์ชันสลับหน้า Code / Preview (Layout 3)
         function switchView(viewName) {
             // อัพเดตปุ่ม
             if (viewName === 'code') {
@@ -263,6 +725,8 @@
                 viewPreview.classList.add('hidden');
                 outputPanel.classList.remove('bg-gray-100');
                 outputPanel.classList.add('bg-gray-900');
+                // แสดงปุ่มคัดลอกเมื่ออยู่หน้า Code
+                copyButton.classList.remove('hidden');
             } else {
                 tabPreview.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600', 'hover:text-white');
                 tabPreview.classList.add('bg-primary-teal', 'text-white');
@@ -274,15 +738,85 @@
                 viewCode.classList.add('hidden');
                 outputPanel.classList.remove('bg-gray-900');
                 outputPanel.classList.add('bg-gray-100');
+                // ซ่อนปุ่มคัดลอกเมื่ออยู่หน้า Preview
+                copyButton.classList.add('hidden');
             }
         }
 
+        // Function to copy code to clipboard
+        function copyCode() {
+            if (viewCode.classList.contains('hidden')) {
+                // หากไม่ได้อยู่ใน Code View ไม่ทำอะไร
+                return;
+            }
+
+            const textToCopy = codeContent.textContent || codeContent.innerText;
+            
+            // ใช้ document.execCommand('copy') สำหรับคัดลอกในสภาพแวดล้อม iFrame
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('Failed to copy text', err);
+            }
+            
+            document.body.removeChild(tempTextArea);
+
+            // Provide visual feedback (Change icon and title)
+            if (success) {
+                const originalTitle = copyButton.getAttribute('title');
+                // Checkmark icon (SVG)
+                copyButton.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                copyButton.setAttribute('title', 'คัดลอกแล้ว!');
+
+                setTimeout(() => {
+                    // Restore original icon and title
+                    copyButton.innerHTML = `<svg id="copy-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4-4m0 0l-4 4m4-4v12"></path></svg>`;
+                    copyButton.setAttribute('title', originalTitle);
+                }, 2000);
+            } else {
+                // In case of failure, use a message box (not alert()) for feedback
+                const feedbackMessage = document.createElement('div');
+                feedbackMessage.textContent = 'ไม่สามารถคัดลอกโค้ดได้ กรุณาลองคัดลอกด้วยตนเอง';
+                feedbackMessage.className = 'fixed bottom-4 right-4 bg-red-600 text-white p-3 rounded-lg shadow-xl z-50 transition duration-300 transform translate-y-full';
+                document.body.appendChild(feedbackMessage);
+
+                // Animate in and out
+                setTimeout(() => {
+                    feedbackMessage.classList.remove('translate-y-full');
+                    feedbackMessage.classList.add('translate-y-0');
+                }, 10);
+                
+                setTimeout(() => {
+                    feedbackMessage.classList.remove('translate-y-0');
+                    feedbackMessage.classList.add('translate-y-full');
+                    feedbackMessage.addEventListener('transitionend', () => feedbackMessage.remove());
+                }, 3000);
+            }
+        }
+
+        // EVENT LISTENERS
         tabCode.addEventListener('click', () => switchView('code'));
         tabPreview.addEventListener('click', () => switchView('preview'));
+        copyButton.addEventListener('click', copyCode);
+        
+        // MODAL TRIGGERS
+        newCodeButton.addEventListener('click', handleNewCodeClick);
+        logoutButton.addEventListener('click', handleLogoutClick);
 
-        // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า: ให้ Sidebar มีความกว้างเริ่มต้น 80px
+        // SUBMENU TRIGGERS
+        projectHistoryButton.addEventListener('click', toggleProjectSubMenu); 
+        aiSettingsButton.addEventListener('click', toggleAiSettingsSubMenu);
+        userManualButton.addEventListener('click', toggleUserManualSubMenu); 
+        designTemplatesButton.addEventListener('click', toggleDesignTemplatesSubMenu);
+
+        // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า
         window.onload = function() {
-            sidebar.style.width = '80px';
             switchView('code'); // แสดงโค้ดเริ่มต้น
         };
     </script>
